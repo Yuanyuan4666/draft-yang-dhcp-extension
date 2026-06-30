@@ -47,10 +47,6 @@ Traditional network operations and management architectures heavily rely on lega
 
 Nowadays network control planes are evolving toward an LLM Control Plane. Equipped with high performance NPUs, these controllers execute policy inference and orchestration, leveraging decoupled operational skills for configuration and troubleshooting. To anchor these architectures, the client device bootstraps and dynamically discovers the control plane's LLM parameters, enabling stable agent sessions.
 
-# Conventions and Definitions
-
-{::boilerplate bcp14-tagged}
-
 # Problem Statement
 
 ## Current Practice vs. Target Architecture
