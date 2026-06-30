@@ -103,13 +103,13 @@ DHCP New Option Extension options convey the LLM Address, LLM Capability Level (
 0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +---------------+---------------+-------------------------------+
-|        OPTION_LLM_META        |       Option-Length           | 
+|        OPTION_LLM_META        |       Option-Length           |
 +---------------+---------------+---------------+---------------+
 |    LLM_Cap    |        LLM_Scale              |  LLM_Role     |
 +---------------+-------------------------------+---------------+
 |                      API_Price                                |
 +-------------------------------+--------------+----------------+
-|       LLM_Dest_Port           |   Addr_Type  |                | 
+|       LLM_Dest_Port           |   Addr_Type  |                |
 +-------------------------------+--------------+                |
 |                                                               |
 |           Address / Domain Name (Variable Length...)          |
