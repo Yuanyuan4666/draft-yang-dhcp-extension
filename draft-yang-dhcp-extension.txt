@@ -70,21 +70,19 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
-   2.  Conventions and Definitions
-   3.  Problem Statement
-     3.1.  Current Practice vs. Target Architecture
-     3.2.  Technical Gap
-   4.  Protocol Flow
-   5.  Message Formats
-     5.1.  New DHCP Option Format (Standalone Option)
-     5.2.  Alternative Sub-option Format (Extension via Option 43)
-     5.3.  Field Attribute Interpretations
-   6.  Deployment Architecture Comparison
-     6.1.  Pros of Standalone New DHCP Option
-     6.2.  Pros of New Extension via Option 43
-   7.  Security Considerations
-   8.  IANA Considerations
-   9.  Normative References
+   2.  Problem Statement
+     2.1.  Current Practice vs. Target Architecture
+     2.2.  Technical Gap
+   3.  Protocol Flow
+   4.  Message Formats
+     4.1.  New DHCP Option Format (Standalone Option)
+     4.2.  Alternative Sub-option Format (Extension via Option 43)
+     4.3.  Field Attribute Interpretations
+   5.  Deployment Architecture Comparison
+     5.1.  Pros of Standalone New DHCP Option
+     5.2.  Pros of New Extension via Option 43
+   6.  Security Considerations
+   7.  IANA Considerations
    Acknowledgments
    Author's Address
 
@@ -105,17 +103,9 @@ Table of Contents
    discovers the control plane's LLM parameters, enabling stable agent
    sessions.
 
-2.  Conventions and Definitions
+2.  Problem Statement
 
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-   "OPTIONAL" in this document are to be interpreted as described in
-   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
-   capitals, as shown here.
-
-3.  Problem Statement
-
-3.1.  Current Practice vs. Target Architecture
+2.1.  Current Practice vs. Target Architecture
 
    Current Practice: Characterized by traditional element management and
    legacy data forwarding, coupled with manual, static CLI dependencies.
@@ -125,7 +115,7 @@ Table of Contents
    orchestration, leveraging decoupled operational skills for
    configuration and troubleshooting.
 
-3.2.  Technical Gap
+2.2.  Technical Gap
 
    During initial network bootstrapping, a client device acquires only
    basic IP parameters via standard DHCP and cannot perceive the LLM
@@ -141,7 +131,7 @@ Table of Contents
    with an alternative controller.  This blind interconnectivity wastes
    network bandwidth and introduces severe control-plane setup latency.
 
-4.  Protocol Flow
+3.  Protocol Flow
 
    There are two viable implementation methods to carry the required LLM
    metadata parameters within the protocol payload: a standalone new
@@ -181,14 +171,14 @@ Client Device                                                 DHCP Server
    (72B Model)), Role (0x01 (Primary Master)), and Price (Budget
    Verified).
 
-5.  Message Formats
+4.  Message Formats
 
    DHCP New Option Extension options convey the LLM Address, LLM
    Capability Level (Scale-Based), API Pricing, and LLM Primary/Standby
    Roles.  The implementation methods include the following two
    approaches, both of which are viable options for product deployment:
 
-5.1.  New DHCP Option Format (Standalone Option)
+4.1.  New DHCP Option Format (Standalone Option)
 
    0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -206,7 +196,7 @@ Client Device                                                 DHCP Server
    |                                                               |
    +---------------------------------------------------------------+
 
-5.2.  Alternative Sub-option Format (Extension via Option 43)
+4.2.  Alternative Sub-option Format (Extension via Option 43)
 
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -226,7 +216,7 @@ Client Device                                                 DHCP Server
 | SubType=0x06  | SubLen=Var    | Address/Domain (Variable...)  | <-- Sub-TLV 6
 +-------------------------------+-------------------------------+
 
-5.3.  Field Attribute Interpretations
+4.3.  Field Attribute Interpretations
 
    LLM_Cap:  1 octet. 0x01 indicates Active; 0x00 indicates Baseline.
 
@@ -246,9 +236,9 @@ Client Device                                                 DHCP Server
    API_Price:  4 bytes. 0x0000000A represents the monetary cost per
       million tokens.
 
-6.  Deployment Architecture Comparison
+5.  Deployment Architecture Comparison
 
-6.1.  Pros of Standalone New DHCP Option
+5.1.  Pros of Standalone New DHCP Option
 
    *  Cleaner design without nesting attributes inside complex
       structures.
@@ -261,7 +251,7 @@ Client Device                                                 DHCP Server
       (subtype + sublen) across every field, resulting in lower overall
       packet size overhead.
 
-6.2.  Pros of New Extension via Option 43
+5.2.  Pros of New Extension via Option 43
 
    *  Does not require a scarce global Option assignment from IANA.
 
@@ -273,7 +263,7 @@ Client Device                                                 DHCP Server
       new LLM attributes without breaking the main protocol container
       structure.
 
-7.  Security Considerations
+6.  Security Considerations
 
    If malicious nodes spoof DHCP responses and advertise falsified LLM
    attributes, they can trick client devices into joining fraudulent
@@ -281,23 +271,12 @@ Client Device                                                 DHCP Server
    these risks requires validation via standard network access control
    mechanisms and higher-layer channel authentication.
 
-8.  IANA Considerations
+7.  IANA Considerations
 
    This document requests IANA to allocate a new DHCP Option code from
    the standardized range (224 to 254) for the standalone option format,
    or alternatively register the sub-option definitions within the
    Option 43 internal sub-option registry space.
-
-9.  Normative References
-
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/rfc/rfc2119>.
-
-   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
-              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
 Acknowledgments
 
