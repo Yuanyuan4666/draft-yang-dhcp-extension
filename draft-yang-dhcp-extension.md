@@ -19,11 +19,11 @@
 # Change the file extension to match the format (.xml for XML, etc...)
 #
 ###
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
+title: "TODO - draft-yang-dhcp-extension"
+abbrev: "TODO - draft-yang-dhcp-extension"
 category: info
 
-docname: draft-todo-yourname-protocol-latest
+docname: draft-yang-dhcp-extension
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
