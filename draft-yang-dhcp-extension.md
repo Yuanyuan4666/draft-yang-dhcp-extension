@@ -138,16 +138,16 @@ DHCP New Option Extension options convey the LLM Address, LLM Capability Level (
 ## Field Attribute Interpretations
 
 LLM_Cap:
-: 1 octet. 0x01 indicates Active; 0x00 indicates Baseline.
+: 1 byte. 0x01 indicates Active; 0x00 indicates Baseline.
 
 LLM_Scale:
 : 2 bytes. Unsigned integer directly representing the model scale size in units of Billions (B). This continuous range accommodates diverse deployment sizes.
 
 LLM_Role:
-: 1 octet. 0x01 indicates Primary LLM; 0x02 indicates Backup LLM.
+: 1 byte. 0x01 indicates Primary LLM; 0x02 indicates Backup LLM.
 
 Addr_Type:
-: 1 octet. 0x01 indicates IPv4 (4 bytes); 0x02 indicates IPv6 (16 bytes); 0x03 indicates FQDN.
+: 1 byte. 0x01 indicates IPv4 (4 bytes); 0x02 indicates IPv6 (16 bytes); 0x03 indicates FQDN.
 
 LLM_Dest_Port:
 : 2 bytes. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.
