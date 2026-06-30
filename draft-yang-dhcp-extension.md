@@ -37,15 +37,15 @@ informative:
 
 --- abstract
 
-This document defines a DHCP option extension designed to advertise the reachability and runtime computational parameters of an upstream Large Language Model (LLM) control plane during the initial bootstrap phase. The specified metadata includes LLM capability status, parameter scale, deployment hierarchy roles, and API pricing attributes. This mechanism allows client devices to perceive the intelligence profiles of upstream controllers prior to establishing high-layer agent sessions, mitigating control-plane latency and redundant session negotiation overhead.
+This document defines a Dynamic Host Configuration Protocol (DHCP) option extension designed to advertise the reachability and runtime computational parameters of an upstream Large Language Model (LLM) control plane during the initial bootstrap phase. The specified metadata includes LLM capability status, parameter scale, deployment hierarchy roles, and API pricing attributes. This mechanism allows client devices to perceive the intelligence profiles of upstream controllers prior to establishing high-layer agent sessions, mitigating control-plane latency and redundant session negotiation overhead.
 
 --- middle
 
 # Introduction
 
-Traditional network operations and management architectures heavily rely on legacy data forwarding to manage client devices (such as switches, routers, firewalls, Access Controllers, Access Points, and wired or wireless endpoints). Establishing stable, capacity-matched agent sessions between the master device and client devices requires a lightweight discovery mechanism at the link layer.
+Traditional network operations and management architectures heavily rely on legacy data forwarding to manage client devices, such as switches, routers, firewalls, Access Controllers, Access Points, and wired or wireless endpoints. Establishing stable, capacity-matched agent sessions between the master device and client devices requires a lightweight discovery mechanism at the link layer.
 
-Modern network control planes are evolving toward an LLM Control Plane. Equipped with high performance NPUs, these controllers execute policy inference and orchestration, leveraging decoupled operational skills for configuration and troubleshooting. To anchor these architectures, the client device bootstraps and dynamically discovers the control plane's LLM parameters, enabling stable agent sessions.
+Nowadays network control planes are evolving toward an LLM Control Plane. Equipped with high performance NPUs, these controllers execute policy inference and orchestration, leveraging decoupled operational skills for configuration and troubleshooting. To anchor these architectures, the client device bootstraps and dynamically discovers the control plane's LLM parameters, enabling stable agent sessions.
 
 # Conventions and Definitions
 
@@ -61,15 +61,13 @@ Target Architecture: Transitioning to an LLM Control Plane equipped with high pe
 
 ## Technical Gap
 
-During initial network bootstrapping, a client device acquires only basic IP parameters via standard DHCP and cannot perceive the LLM capabilities of the upstream controller. Existing DHCP options cannot encapsulate runtime computational and intelligence capabilities (such as model presence, scale, or operational costs).
-
-## Control-Plane Performance Bottlenecks
+During initial network bootstrapping, a client device acquires only basic IP parameters via standard DHCP and cannot perceive the LLM capabilities of the upstream controller. Existing DHCP options cannot encapsulate runtime computational and intelligence capabilities, such as model presence, scale, or operational costs.
 
 Without early-stage capability awareness, client devices blindly establish full protocol sessions (such as TLS, NETCONF, or MCP) with the controller. If the selected controller lacks the required LLM capability status, model scale, or budget alignment necessary for specific local tasks, the session must be torn down and renegotiated with an alternative controller. This blind interconnectivity wastes network bandwidth and introduces severe control-plane setup latency.
 
 # Protocol Flow
 
-When implementing the Option 43 extension pathway, the client parses the sub-option fields sequentially through pointer iterations (e.g., utilizing while or for loops based on sub-option lengths). The sequence below illustrates the programmatic exchange and data extraction boundary:
+There are two viable implementation methods to carry the required LLM metadata parameters within the protocol payload: a standalone new DHCP Option or a sub-option extension embedded within the existing Vendor-Specific Information Option (Option 43). The sequence below illustrates the interaction and extraction procedure:
 
 ~~~~
 Client Device                                                 DHCP Server
@@ -88,35 +86,35 @@ Client Device                                                 DHCP Server
 [Extract direct / Extract through while or for using pointer]
      |
      +--> Cap = 0x01 (LLM Active)
-     +--> Scale = 0x48 (72B Model)
+     +--> Scale = 0x0048 (72B Model)
      +--> Role = 0x01 (Primary Master)
      +--> Price = Budget Verified
 ~~~~
 
-The interaction shows how the client device discovers the parameters. Upon receiving the DHCPACK response, it extracts the target values including Cap (0x01 (LLM Active)), Scale (0x48 (72B Model)), Role (0x01 (Primary Master)), and Price (Budget Verified) via direct offsets or sub-option loop pointers.
+The interaction diagram above shows how the client device discovers the parameters. Upon receiving the final DHCPACK response, the client device terminates the state machine and extracts the target metadata. Depending on the deployment approach, the parameters are extracted either via direct structural field offsets (for the standalone new option) or parsed sequentially through pointer iterations using while/for loops to traverse the internal sub-TLVs (for the Option 43 extension pathway). The extracted boundary values define the session properties: Cap (0x01 (LLM Active)), Scale (0x0048 (72B Model)), Role (0x01 (Primary Master)), and Price (Budget Verified).
 
 # Message Formats
 
-To facilitate product commercialization, this specification defines two viable deployment options: a standalone new DHCP Option or a sub-option extension embedded within the existing Vendor-Specific Information Option (Option 43).
-
-DHCP New Option Extension: LLM Address, LLM Capability Level (Scale-Based), API Pricing, and LLM Primary/Standby Roles. The implementation methods include the following two approaches (both are viable options for product commercialization):
+DHCP New Option Extension options convey the LLM Address, LLM Capability Level (Scale-Based), API Pricing, and LLM Primary/Standby Roles. The implementation methods include the following two approaches, both of which are viable options for product deployment:
 
 ## New DHCP Option Format (Standalone Option)
 
 ~~~~
- 0                   1                   2                   3
+0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-------------------------------+-------------------------------+
-| OPTION_LLM_METADATA (Range)   | Option-Length (Variable)      |
-+-------------------------------+-------------------------------+
-|  LLM_Cap (1B) |     LLM_Scale (2 Bytes)       |   LLM_Role    |
-+-------------------------------+-------------------------------+
-|                     LLM_Dest_Port (2 Bytes)                   |
-+-------------------------------+-------------------------------+
-|                      LLMA_Price (4 Octets)                    |
-+-------------------------------+-------------------------------+
-|   Addr_Type   | Address / Domain Name (Variable Length...)    |
-+-------------------------------+-------------------------------+
++---------------+---------------+-------------------------------+
+|        OPTION_LLM_META        |       Option-Length           | 
++---------------+---------------+---------------+---------------+
+|    LLM_Cap    |        LLM_Scale              |  LLM_Role     |
++---------------+-------------------------------+---------------+
+|                      API_Price                                |
++-------------------------------+--------------+----------------+
+|       LLM_Dest_Port           |   Addr_Type  |                | 
++-------------------------------+--------------+                |
+|                                                               |
+|           Address / Domain Name (Variable Length...)          |
+|                                                               |
++---------------------------------------------------------------+
 ~~~~
 
 ## Alternative Sub-option Format (Extension via Option 43)
@@ -129,11 +127,11 @@ DHCP New Option Extension: LLM Address, LLM Capability Level (Scale-Based), API 
 +-------------------------------+-------------------------------+
 | SubType=0x01  | SubLen=0x01   | LLM_Cap(0x01) | SubType=0x02  | <-- Sub-TLV 1
 +-------------------------------+-------------------------------+
-| SubLen=0x02   |          LLM_Scale (2 Bytes)                  | <-- Sub-TLV 2
+| SubLen=0x02   |          LLM_Scale (2 Bytes)  | SubType=0x03  | <-- Sub-TLV 2
 +-------------------------------+-------------------------------+
-| SubType=0x03  | SubLen=0x01   | LLM_Role      | SubType=0x04  | <-- Sub-TLV 3
+| SubLen=0x01   | LLM_Role      | SubType=0x04  | SubLen=0x04   | <-- Sub-TLV 3
 +-------------------------------+-------------------------------+
-| SubLen=0x04   |          LLMA_Price (4 Octets)                | <-- Sub-TLV 4
+|                    API_Price (4 bytes)                        | <-- Sub-TLV 4
 +-------------------------------+-------------------------------+
 | SubType=0x05  | SubLen=0x02   |     LLM_Dest_Port             | <-- Sub-TLV 5
 +-------------------------------+-------------------------------+
@@ -147,19 +145,19 @@ LLM_Cap:
 : 1 octet. 0x01 indicates Active; 0x00 indicates Baseline.
 
 LLM_Scale:
-: 2 octets. Unsigned integer directly representing the model scale size in units of Billions (B). This continuous range accommodates diverse deployment sizes.
+: 2 bytes. Unsigned integer directly representing the model scale size in units of Billions (B). This continuous range accommodates diverse deployment sizes.
 
 LLM_Role:
 : 1 octet. 0x01 indicates Primary LLM; 0x02 indicates Backup LLM.
 
 Addr_Type:
-: 1 octet. 0x01 indicates IPv4 (4 octets); 0x02 indicates IPv6 (16 octets); 0x03 indicates FQDN.
+: 1 octet. 0x01 indicates IPv4 (4 bytes); 0x02 indicates IPv6 (16 bytes); 0x03 indicates FQDN.
 
 LLM_Dest_Port:
-: 2 octets. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.
+: 2 bytes. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.
 
-LLMA_Price:
-: 4 octets. 0x0000000A represents the monetary cost per million tokens.
+API_Price:
+: 4 bytes. 0x0000000A represents the monetary cost per million tokens.
 
 # Deployment Architecture Comparison
 
@@ -167,7 +165,7 @@ LLMA_Price:
 
 * Cleaner design without nesting attributes inside complex structures.
 * Fixed field offsets allow network chipsets to parse LLM metadata directly, eliminating pointer iterations that introduce latency and hardware memory consumption.
-* No requirement to allocate 2 octets for single attribute containers (subtype + sublen) across every field, resulting in lower overall packet size overhead.
+* No requirement to allocate 2 bytes for single attribute containers (subtype + sublen) across every field, resulting in lower overall packet size overhead.
 
 ## Pros of New Extension via Option 43
 
@@ -177,7 +175,7 @@ LLMA_Price:
 
 # Security Considerations
 
-Without early-stage capability awareness, client devices blindly establish full protocol sessions with unverified controllers. If malicious nodes spoof DHCP responses and advertise falsified LLM attributes, they can trick client devices into joining fraudulent control planes or consuming high-cost computational APIs. Mitigating these risks requires validation via standard network access control mechanisms and higher-layer channel authentication.
+If malicious nodes spoof DHCP responses and advertise falsified LLM attributes, they can trick client devices into joining fraudulent control planes or consuming high-cost computational APIs. Mitigating these risks requires validation via standard network access control mechanisms and higher-layer channel authentication.
 
 # IANA Considerations
 
