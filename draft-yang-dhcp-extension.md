@@ -37,7 +37,7 @@ informative:
 
 --- abstract
 
-This document defines a Dynamic Host Configuration Protocol (DHCP) option extension designed to advertise the reachability and runtime parameters of an upstream intelligent control plane during the initial bootstrap phase. The specified metadata includes LLM capability status, parameter scale, deployment hierarchy roles, and API pricing attributes. This mechanism allows client devices to perceive the intelligence profiles of upstream control plane prior to establishing sessions, mitigating control-plane latency and redundant session negotiation overhead.
+This document defines a Dynamic Host Configuration Protocol (DHCP) option extension designed to advertise the reachability and runtime parameters of an upstream intelligent control plane during the initial bootstrap phase. This mechanism allows client devices to perceive the intelligence profiles of upstream control plane prior to establishing sessions, mitigating control-plane latency and redundant session negotiation overhead.
 
 --- middle
 
@@ -56,9 +56,9 @@ To address this gap, this document specifies a DHCP option extension designed to
 
 This document defines the following terms:
 
-Master Device:
+**Master Device**:
 : Master Device could be a core switch or gateway equipped with hardware neural processing units. It hosts and executes the llm to perform configuration inference and network troubleshooting.
-Client Device:
+**Client Devices**:
 : Client Device could be an aggregation switche, access switche, or Wi-Fi Access Point (distributive deployed). Since they are constrained by hardware cost and power limits, they delegate heavy text and logic processing to the Master Device.
 Note that Master Device is for generating policies while Client Device is for executing policies.
 
