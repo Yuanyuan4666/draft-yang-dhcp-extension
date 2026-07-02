@@ -37,15 +37,52 @@ informative:
 
 --- abstract
 
-This document defines a Dynamic Host Configuration Protocol (DHCP) option extension designed to advertise the reachability and runtime computational parameters of an upstream Large Language Model (LLM) control plane during the initial bootstrap phase. The specified metadata includes LLM capability status, parameter scale, deployment hierarchy roles, and API pricing attributes. This mechanism allows client devices to perceive the intelligence profiles of upstream controllers prior to establishing high-layer agent sessions, mitigating control-plane latency and redundant session negotiation overhead.
+This document defines a Dynamic Host Configuration Protocol (DHCP) option extension designed to advertise the reachability and runtime computational parameters of an upstream intelligent control plane during the initial bootstrap phase. The specified metadata includes LLM capability status, parameter scale, deployment hierarchy roles, and API pricing attributes. This mechanism allows client devices to perceive the intelligence profiles of upstream controllers prior to establishing high-layer agent sessions, mitigating control-plane latency and redundant session negotiation overhead.
 
 --- middle
 
 # Introduction
 
-Traditional network operations and management architectures heavily rely on legacy data forwarding to manage client devices, such as switches, routers, firewalls, Access Controllers, Access Points, and wired or wireless endpoints. Establishing stable, capacity-matched agent sessions between the master device and client devices requires a lightweight discovery mechanism at the link layer.
+This document specifies a DHCP extension tailored for smart campus networks to automate intent-driven configurations. In a typical campus deployment, a centralized master device (such as a core switch) acts as the high-compute intelligence hub, while massive downstream elements (such as access switches and Wi-Fi APs) serve as lightweight client elements. Due to strict cost ceilings and power limits at the edge, neural processing hardware (NPUs/GPUs) is exclusively centralized on the master device rather than distributed to every edge node.
 
-Nowadays network control planes are evolving toward an LLM Control Plane. Equipped with high performance NPUs, these controllers execute policy inference and orchestration, leveraging decoupled operational skills for configuration and troubleshooting. To anchor these architectures, the client device bootstraps and dynamically discovers the control plane's LLM parameters, enabling stable agent sessions.
+Traditionally, these downstream clients remain blind to upstream computational profiles during bootup, relying on manual, static command-line configuration templates. They often waste link bandwidth and introduce latency by blindly attempting full-stack protocol sessions with unaligned controllers. By inserting key model metrics directly into early DHCP lease negotiations, this extension allows edge client devices to instantly discover the processing profile of their upstream master device. 
+
+# Conventions and Definitions
+
+{::boilerplate bcp14-tagged}
+
+
+ This document defines the following terms:
+
+Master Device:
+: The central network hub (such as a core switch or gateway) equipped with hardware neural processing units. It hosts and executes the llm to perform configuration inference and network troubleshooting.
+Client Device:
+: The downstream edge elements (such as aggregation switches, access swithces, and Wi-Fi Access Points) that are constrained by hardware cost and power limits. They delegate heavy text and logic processing to the Master Device.
+
+# Target Deployment Topology 
+
+The diagram below illustrates a smart campus network topology.
+
+~~~~
+                     +---------------------------------------+
+                     |   Upstream Master Device (Core/GW)    |
+                     |          [Centralized NPU / LLM]      |
+                     |         ====== DHCP Server ======     |
+                     +---------------------------------------+
+                                         |
+               __________________________|__________________________
+              |                                                     |
+   +----------------------+                              +----------------------+
+   | Aggregation Switch A |                              | Aggregation Switch B |
+   +----------------------+                              +----------------------+
+              |                                                     |
+        ______|________________                               ______|________________
+       |                      |                              |                      |
++------------------+  +------------------+            +------------------+  +------------------+
+|  Access Switch   |  |    Wi-Fi7 AP     |            |  Access Switch   |  |    Wi-Fi7 AP     |
+| [DHCP Client]    |  | [DHCP Client]    |            | [DHCP Client]    |  | [DHCP Client]    |
++------------------+  +------------------+            +------------------+  +------------------+
+~~~~
 
 # Problem Statement
 
@@ -53,7 +90,7 @@ Nowadays network control planes are evolving toward an LLM Control Plane. Equipp
 
 Current Practice: Characterized by traditional element management and legacy data forwarding, coupled with manual, static CLI dependencies.
 
-Target Architecture: Transitioning to an LLM Control Plane equipped with high performance NPUs to execute policy inference and automated orchestration, leveraging decoupled operational skills for configuration and troubleshooting.
+Target Architecture: Transitioning to an intelligent control plane equipped with high performance NPUs to execute policy inference and automated orchestration, leveraging decoupled operational skills for configuration and troubleshooting.
 
 ## Technical Gap
 
@@ -171,7 +208,7 @@ API_Price:
 
 # Security Considerations
 
-If malicious nodes spoof DHCP responses and advertise falsified LLM attributes, they can trick client devices into joining fraudulent control planes or consuming high-cost computational APIs. Mitigating these risks requires validation via standard network access control mechanisms and higher-layer channel authentication.
+TBD
 
 # IANA Considerations
 
