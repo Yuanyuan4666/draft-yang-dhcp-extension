@@ -49,16 +49,6 @@ Traditionally, these downstream clients remain blind to upstream computational p
 
 To address this gap, this document specifies a DHCP option extension designed to advertise the reachability and runtime parameters of the upstream intelligent control plane during the initial bootstrap phase. By inserting metrics, such as model capability status, parameter scale, deployment hierarchy roles, and API pricing attributes—directly into early DHCP negotiations, client devices to instantly discover the profile of the upstream intelligent control plane. 
 
-# Introduction
-
-Traditional network operations and management architectures heavily rely on manual, static Command Line Interface (CLI) configuration templates and legacy element management systems. In next-generation smart campus deployments, the control plane is transitioning toward an intelligent control plane. Equipped with high-performance Neural Processing Units (NPUs), these centralized upstream master devices (such as core switches or gateways) execute policy inference and automated orchestration, leveraging decoupled operational skills for configuration and troubleshooting. 
-
-Conversely, massive downstream elements at the network edge (such as access switches and Wi-Fi APs) serve as lightweight client devices. Due to strict cost ceilings and power limits, neural processing hardware is exclusively centralized on the master device rather than distributed to every edge node. This creates an asymmetric compute architecture where edge devices must delegate complex text, log interpretation, and configuration synthesis to the central intelligent model brain.
-
-However, a critical technical gap exists during initial network bootstrapping. A client device traditionally acquires only basic IP parameters via standard DHCP and remains completely blind to the runtime computational profiles or presence of the upstream master device. Without early-stage capability awareness, edge client devices blindly attempt to establish full-stack protocol sessions (such as TLS, NETCONF, or Model Context Protocol (MCP) channels) with upstream controllers. If a selected controller lacks the required model active status, necessary parameter scale, or budget alignment required for specific local automation tasks, the session must be torn down and renegotiated with an alternative controller. This blind interconnectivity wastes link bandwidth and introduces severe control-plane setup latency.
-
-To address this gap, this document specifies a DHCP option extension designed to advertise the reachability and runtime computational parameters of an upstream intelligent control plane during the initial bootstrap phase. By inserting key metrics—such as model capability status, parameter scale, deployment hierarchy roles, and API pricing attributes—directly into early DHCP lease negotiations, edge client devices can instantly perceive the intelligence profile of their upstream master device. This asymmetric compute discovery enables clients to immediately establish direct, optimized channels with a compatible master device, achieving real-time, zero-touch network operations while mitigating redundant session negotiation overhead.
-
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
