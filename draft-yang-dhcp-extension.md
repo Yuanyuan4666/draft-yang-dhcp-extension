@@ -37,17 +37,22 @@ informative:
 
 --- abstract
 
-This document defines a Dynamic Host Configuration Protocol (DHCP) option extension designed to advertise the reachability and runtime parameters of an upstream intelligent control plane during the initial bootstrap phase. This mechanism allows client devices to perceive the intelligence profiles of upstream control plane prior to establishing sessions, mitigating control-plane latency and redundant session negotiation overhead.
+This document specifies a DHCP option extension designed for campus networks to help client devices connect to a master device with Artificial Intelligence (AI) capabilities. The mechanism extends two specific parameters within the DHCP payload: the master device address information and the master device intelligent attribute identity. This allows client devices to identify and register to an AI-capable master device during the bootstrap phase, enabling them to utilize upstream AI capabilities and preventing the waste of master device processing resources.
 
 --- middle
 
 # Introduction
 
-This document specifies a DHCP extension tailored for smart campus networks to automate intent-driven configurations. In a typical campus deployment, a centralized master device (such as a core switch) acts as the high-compute intelligence hub, while massive downstream elements (such as access switches and Wi-Fi APs) serve as lightweight client elements. Due to strict cost ceilings and power limits at the edge, neural processing units/graphics processing units (NPUs/GPUs) is exclusively centralized on the master device rather than distributed to every edge node.
+A campus network refers to a local area network established within a specific area (such as an enterprise, science park, school, or hospital) to provide specific services or meet specific requirements. Network elements within a campus network are divided into master devices and client devices. client devices must discover and register to a master device to complete networking, while the master device manages multiple registered client devices. With the development of AI, at least one master device in the campus network possesses AI capabilities.
 
-Traditionally, these downstream clients remain blind to upstream computational profiles during bootup, relying on manual, static command-line configuration templates. Also, they acquire only basic IP parameters via standard DHCP and remains completely blind to the runtime computational profiles or presence of the upstream master device. Without early-stage capability awareness, edge client devices blindly attempt to establish higher protocol sessions (such as TLS, NETCONF, or Model Context Protocol (MCP)) with upstream controll plane. This blind interconnectivity wastes link bandwidth and introduces severe control-plane setup latency.
+In existing discovery and registration schemes, a client device selects a master device from multiple available options based solely on the discovery sequence or the current load conditions of the master devices. However, under these current practices, client devices cannot determine whether a master device possesses AI capabilities and may register to a non-AI-capable device. Consequently, client devices cannot request or utilize the AI capabilities of the master device and can only accept basic management, leading to a waste of the master device's AI resources.
 
-To address this gap, this document specifies a DHCP option extension designed to advertise the reachability and runtime parameters of the upstream intelligent control plane during the initial bootstrap phase. By inserting metrics, such as model capability status, parameter scale, deployment hierarchy roles, and API pricing attributes—directly into early DHCP negotiations, client devices to instantly discover the profile of the upstream intelligent control plane. 
+To address this limitation, this document specifies a method for connecting to an AI-capable master device. The solution extends two distinct elements within the DHCP protocol payload:
+1. **Master device address information**
+2. **Master device intelligent attribute identity**
+
+By delivering these two extensions during initial negotiation, client devices can successfully identify and connect to a master device with AI capabilities, allowing them to utilize upstream AI resources and avoiding the waste of computational capabilities.
+
 
 # Conventions and Definitions
 
@@ -61,7 +66,22 @@ This document defines the following terms:
 
 **Client Device**:
 : Client Device could be an aggregation switche, access switche, or Wi-Fi Access Point (distributive deployed). Since they are constrained by hardware cost and power limits, they delegate heavy text and logic processing to the Master Device.
+
 Note that Master Device is for generating policies while Client Device is for executing policies.
+
+**Master Device Address Information**:
+: The network coordinates used by a Client Device to reach the Master Device. It includes:
+  * **Addr_Type**: Master devices' IPv4, IPv6, or FQDN addresses.
+  * **LLM_Dest_Port**: Specifies the destination transport port for the Master device with llm.
+
+**Master Device Intelligent Attribute Identity**:
+: The capability profile of the Master Device's llm. It includes:
+  * **LLM_Cap**: Indicates whether the model capability is active or at baseline.
+  * **LLM_Scale**: Represents the llm parameter size in billions (B).
+  * **LLM_Role**: Identifies the master device's role in a high-availability setup (Primary or Backup).
+  * **API_Price**: Indicates the financial cost per million tokens.
+    
+
 
 # Target Deployment Topology
 
@@ -97,29 +117,30 @@ The deployment model implements an architecture structured as follows:
 
 Note: The intermediate Aggregation Switches serve as transparent layer-2 or layer-3 transport elements only for transporting traffic.
 
-During the initial bootstrap phase, Client Devices broadcast standard DHCP Discover and Request messages up through the aggregation layer. These frames encapsulate the Parameter Request List (PRL), signaling their intent to discover upstream model intelligence profiles. In response, the Master Device transmits DHCP Offer and ACK messages down to the clients. This mechanism carries the newly extended option metadata, including model presence, parameter scale, deployment hierarchy roles, and operational cost structures back to the clients.
-
 # Protocol Flow
 
-There are two viable implementation methods to carry the required LLM metadata parameters within the protocol payload: a standalone new DHCP Option or a sub-option extension embedded within the existing Vendor-Specific Information Option (Option 43). They follow the identical standard DHCP sequence and the sequence below illustrates the interaction and extraction procedure:
+Two implementation methods can carry the required parameters within the protocol payload: a standalone new DHCP Option or a sub-option extension within the existing Vendor-Specific Information Option (Option 43). Both methods follow the identical standard DHCP sequence below, differing only in the specific Option code requested and returned:
 
 ~~~~
 Client Device                                                 DHCP Server
      |                                                             |
      |--- DHCP Discover ------------------------------------------>|
-     |    (PRL includes New Option / Option 43)                    |
+     |    (PRL includes New Option or Option 43)                    |
      |                                                             |
      |<-- DHCP Offer ----------------------------------------------|
-     |    (Carries New Option / Option 43 payload)                 |
+     |    (Carries Master Device Address Information               |
+     |     & Master Device Intelligent Attribute Identity)         |
      |                                                             |
      |--- DHCP Request ------------------------------------------->|
      |                                                             |
      |<-- DHCP ACK ------------------------------------------------|
+     |    (Carries Master Device Address Information               |
+     |     & Master Device Intelligent Attribute Identity)         |
      |                                                             |
      v                                                             v
 [Extract direct / Extract through while or for using pointer]
      |
-     +--> Cap = 0x01 (LLM Active)
+     +--> Cap = 0x01 (Model Active)
      +--> Scale = 0x0048 (72B Model)
      +--> Role = 0x01 (Primary Master)
      +--> Price = Budget Verified
@@ -137,7 +158,7 @@ Client Device                                                 DHCP Server
 
 # Message Formats
 
-DHCP New Option Extension options convey the LLM Address, LLM Capability Level (Scale-Based), API Pricing, and LLM Primary/Standby Roles. The implementation methods include the following two approaches, they only differ in the message formats as follows:
+DHCP extensions convey the Master Device Address Information and the Master Device Intelligent Attribute Identity. The two implementation methods only differ in their message formats as follows:
 
 ## New DHCP Option Format (Standalone Option)
 
@@ -181,24 +202,26 @@ DHCP New Option Extension options convey the LLM Address, LLM Capability Level (
 +-------------------------------+-------------------------------+
 ~~~~
 
-## Field Attribute Interpretations
+### Field Attribute Interpretations
 
-The two implementation methods share the same payload formats as follows:
-
-LLM_Cap:
-: 1 byte. 0x01 indicates Active; 0x00 indicates Baseline.
-
-LLM_Scale:
-: 2 bytes. Unsigned integer directly representing the model scale size in units of Billions (B). This continuous range accommodates diverse deployment sizes.
-
-LLM_Role:
-: 1 byte. 0x01 indicates Primary LLM; 0x02 indicates Backup LLM.
+**Master Device Address Information Parameters:**
 
 Addr_Type:
 : 1 byte. 0x01 indicates IPv4 (4 bytes); 0x02 indicates IPv6 (16 bytes); 0x03 indicates FQDN.
 
 LLM_Dest_Port:
 : 2 bytes. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.
+
+**Master Device Intelligent Attribute Identity Parameters:**
+
+LLM_Cap:
+: 1 byte. 0x01 indicates Active; 0x00 indicates Baseline.
+
+LLM_Scale:
+: 2 bytes. Unsigned integer representing the model scale size in units of Billions (B).
+
+LLM_Role:
+: 1 byte. 0x01 indicates Primary Master; 0x02 indicates Backup Master.
 
 API_Price:
 : 4 bytes. 0x0000000A represents the monetary cost per million tokens.
