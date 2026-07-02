@@ -52,12 +52,12 @@ Traditionally, these downstream clients remain blind to upstream computational p
 {::boilerplate bcp14-tagged}
 
 
- This document defines the following terms:
+This document defines the following terms:
 
 Master Device:
 : The central network hub (such as a core switch or gateway) equipped with hardware neural processing units. It hosts and executes the llm to perform configuration inference and network troubleshooting.
 Client Device:
-: The downstream edge elements (such as aggregation switches, access swithces, and Wi-Fi Access Points) that are constrained by hardware cost and power limits. They delegate heavy text and logic processing to the Master Device.
+: The downstream edge elements (such as aggregation switches, access swicthes, and Wi-Fi Access Points) that are constrained by hardware cost and power limits. They delegate heavy text and logic processing to the Master Device.
 
 # Target Deployment Topology 
 
