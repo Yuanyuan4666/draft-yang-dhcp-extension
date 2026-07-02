@@ -65,7 +65,7 @@ This document defines the following terms:
 : Master Device could be a core switch or gateway equipped with hardware neural processing units. It hosts and executes the llm to perform configuration inference and network troubleshooting.
 
 **Client Device**:
-: Client Device could be an aggregation switche, access switche, or Wi-Fi Access Point (distributive deployed). Since they are constrained by hardware cost and power limits, they delegate heavy text and logic processing to the Master Device.
+: Client Device could be an aggregation switch, access switch, or a Wi-Fi Access Point (distributive deployed). Since they are constrained by hardware cost and power limits, they delegate heavy text and logic processing to the Master Device.
 
 Note that Master Device is for generating policies while Client Device is for executing policies.
 
