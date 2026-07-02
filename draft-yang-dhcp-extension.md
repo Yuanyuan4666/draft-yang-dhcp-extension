@@ -37,15 +37,27 @@ informative:
 
 --- abstract
 
-This document defines a Dynamic Host Configuration Protocol (DHCP) option extension designed to advertise the reachability and runtime computational parameters of an upstream intelligent control plane during the initial bootstrap phase. The specified metadata includes LLM capability status, parameter scale, deployment hierarchy roles, and API pricing attributes. This mechanism allows client devices to perceive the intelligence profiles of upstream controllers prior to establishing high-layer agent sessions, mitigating control-plane latency and redundant session negotiation overhead.
+This document defines a Dynamic Host Configuration Protocol (DHCP) option extension designed to advertise the reachability and runtime parameters of an upstream intelligent control plane during the initial bootstrap phase. The specified metadata includes LLM capability status, parameter scale, deployment hierarchy roles, and API pricing attributes. This mechanism allows client devices to perceive the intelligence profiles of upstream control plane prior to establishing sessions, mitigating control-plane latency and redundant session negotiation overhead.
 
 --- middle
 
 # Introduction
 
-This document specifies a DHCP extension tailored for smart campus networks to automate intent-driven configurations. In a typical campus deployment, a centralized master device (such as a core switch) acts as the high-compute intelligence hub, while massive downstream elements (such as access switches and Wi-Fi APs) serve as lightweight client elements. Due to strict cost ceilings and power limits at the edge, neural processing hardware (NPUs/GPUs) is exclusively centralized on the master device rather than distributed to every edge node.
+This document specifies a DHCP extension tailored for smart campus networks to automate intent-driven configurations. In a typical campus deployment, a centralized master device (such as a core switch) acts as the high-compute intelligence hub, while massive downstream elements (such as access switches and Wi-Fi APs) serve as lightweight client elements. Due to strict cost ceilings and power limits at the edge, neural processing units/graphics processing units (NPUs/GPUs) is exclusively centralized on the master device rather than distributed to every edge node.
 
-Traditionally, these downstream clients remain blind to upstream computational profiles during bootup, relying on manual, static command-line configuration templates. They often waste link bandwidth and introduce latency by blindly attempting full-stack protocol sessions with unaligned controllers. By inserting key model metrics directly into early DHCP lease negotiations, this extension allows edge client devices to instantly discover the processing profile of their upstream master device. 
+Traditionally, these downstream clients remain blind to upstream computational profiles during bootup, relying on manual, static command-line configuration templates. Also, they acquire only basic IP parameters via standard DHCP and remains completely blind to the runtime computational profiles or presence of the upstream master device. Without early-stage capability awareness, edge client devices blindly attempt to establish higher protocol sessions (such as TLS, NETCONF, or Model Context Protocol (MCP) channels) with upstream controllers. If a selected controller lacks the required model active status, necessary parameter scale, or budget alignment required for specific local automation tasks, the session must be torn down and renegotiated with an alternative controller. This blind interconnectivity wastes link bandwidth and introduces severe control-plane setup latency.
+
+To address this gap, this document specifies a DHCP option extension designed to advertise the reachability and runtime parameters of the upstream intelligent control plane during the initial bootstrap phase. By inserting metrics, such as model capability status, parameter scale, deployment hierarchy roles, and API pricing attributes—directly into early DHCP negotiations, client devices to instantly discover the profile of the upstream intelligent control plane. 
+
+# Introduction
+
+Traditional network operations and management architectures heavily rely on manual, static Command Line Interface (CLI) configuration templates and legacy element management systems. In next-generation smart campus deployments, the control plane is transitioning toward an intelligent control plane. Equipped with high-performance Neural Processing Units (NPUs), these centralized upstream master devices (such as core switches or gateways) execute policy inference and automated orchestration, leveraging decoupled operational skills for configuration and troubleshooting. 
+
+Conversely, massive downstream elements at the network edge (such as access switches and Wi-Fi APs) serve as lightweight client devices. Due to strict cost ceilings and power limits, neural processing hardware is exclusively centralized on the master device rather than distributed to every edge node. This creates an asymmetric compute architecture where edge devices must delegate complex text, log interpretation, and configuration synthesis to the central intelligent model brain.
+
+However, a critical technical gap exists during initial network bootstrapping. A client device traditionally acquires only basic IP parameters via standard DHCP and remains completely blind to the runtime computational profiles or presence of the upstream master device. Without early-stage capability awareness, edge client devices blindly attempt to establish full-stack protocol sessions (such as TLS, NETCONF, or Model Context Protocol (MCP) channels) with upstream controllers. If a selected controller lacks the required model active status, necessary parameter scale, or budget alignment required for specific local automation tasks, the session must be torn down and renegotiated with an alternative controller. This blind interconnectivity wastes link bandwidth and introduces severe control-plane setup latency.
+
+To address this gap, this document specifies a DHCP option extension designed to advertise the reachability and runtime computational parameters of an upstream intelligent control plane during the initial bootstrap phase. By inserting key metrics—such as model capability status, parameter scale, deployment hierarchy roles, and API pricing attributes—directly into early DHCP lease negotiations, edge client devices can instantly perceive the intelligence profile of their upstream master device. This asymmetric compute discovery enables clients to immediately establish direct, optimized channels with a compatible master device, achieving real-time, zero-touch network operations while mitigating redundant session negotiation overhead.
 
 # Conventions and Definitions
 
@@ -55,9 +67,10 @@ Traditionally, these downstream clients remain blind to upstream computational p
 This document defines the following terms:
 
 Master Device:
-: The central network hub (such as a core switch or gateway) equipped with hardware neural processing units. It hosts and executes the llm to perform configuration inference and network troubleshooting.
+: Master Device could be a core switch or gateway equipped with hardware neural processing units. It hosts and executes the llm to perform configuration inference and network troubleshooting.
 Client Device:
-: The downstream edge elements (such as aggregation switches, access switches, and Wi-Fi Access Points) that are constrained by hardware cost and power limits. They delegate heavy text and logic processing to the Master Device.
+: Client Device could be an aggregation switche, access switche, or Wi-Fi Access Point (distributive deployed). Since they are constrained by hardware cost and power limits, they delegate heavy text and logic processing to the Master Device.
+Note that Master Device is for generating policies while Client Device is for executing policies.
 
 # Target Deployment Topology
 
@@ -83,24 +96,20 @@ The diagram below illustrates a smart campus network topology.
 | [DHCP Client]    |  | [DHCP Client]    |            | [DHCP Client]    |  | [DHCP Client]    |
 +------------------+  +------------------+            +------------------+  +------------------+
 ~~~~
+## Topology Description
 
-# Problem Statement
+The deployment model implements an architecture structured as follows:
 
-## Current Practice vs. Target Architecture
+Intelligence Hierarchy:
+: - **Master Device**: The Upstream Master Device (Core/GW) at the root of the network acts as the centralized intelligence, deploying physical hardware acceleration  to run the intelligent model. It simultaneously operates as the DHCP Server.
+: - **Client Devices**: The downstream elements, including the Access Switches and Wi-Fi7 APs at the network edge, operate as lightweight DHCP Clients. 
+Note: The intermediate Aggregation Switches serve as transparent layer-2 or layer-3 transport elements only for transporting traffic.
 
-Current Practice: Characterized by traditional element management and legacy data forwarding, coupled with manual, static CLI dependencies.
-
-Target Architecture: Transitioning to an intelligent control plane equipped with high performance NPUs to execute policy inference and automated orchestration, leveraging decoupled operational skills for configuration and troubleshooting.
-
-## Technical Gap
-
-During initial network bootstrapping, a client device acquires only basic IP parameters via standard DHCP and cannot perceive the LLM capabilities of the upstream controller. Existing DHCP options cannot encapsulate runtime computational and intelligence capabilities, such as model presence, scale, or operational costs.
-
-Without early-stage capability awareness, client devices blindly establish full protocol sessions (such as TLS, NETCONF, or MCP) with the controller. If the selected controller lacks the required LLM capability status, model scale, or budget alignment necessary for specific local tasks, the session must be torn down and renegotiated with an alternative controller. This blind interconnectivity wastes network bandwidth and introduces severe control-plane setup latency.
+During the initial bootstrap phase, Client Devices broadcast standard DHCP Discover and Request messages up through the aggregation layer. These frames encapsulate the Parameter Request List (PRL), signaling their intent to discover upstream model intelligence profiles. In response, the Master Device transmits DHCP Offer and ACK messages down to the clients. This mechanism carries the newly extended option metadata, including model presence, parameter scale, deployment hierarchy roles, and operational cost structures back to the clients.
 
 # Protocol Flow
 
-There are two viable implementation methods to carry the required LLM metadata parameters within the protocol payload: a standalone new DHCP Option or a sub-option extension embedded within the existing Vendor-Specific Information Option (Option 43). The sequence below illustrates the interaction and extraction procedure:
+There are two viable implementation methods to carry the required LLM metadata parameters within the protocol payload: a standalone new DHCP Option or a sub-option extension embedded within the existing Vendor-Specific Information Option (Option 43). They follow the identical standard DHCP sequence and the sequence below illustrates the interaction and extraction procedure:
 
 ~~~~
 Client Device                                                 DHCP Server
@@ -124,11 +133,19 @@ Client Device                                                 DHCP Server
      +--> Price = Budget Verified
 ~~~~
 
-The interaction diagram above shows how the client device discovers the parameters. Upon receiving the final DHCPACK response, the client device terminates the state machine and extracts the target metadata. Depending on the deployment approach, the parameters are extracted either via direct structural field offsets (for the standalone new option) or parsed sequentially through pointer iterations using while/for loops to traverse the internal sub-TLVs (for the Option 43 extension pathway). The extracted boundary values define the session properties: Cap (0x01 (LLM Active)), Scale (0x0048 (72B Model)), Role (0x01 (Primary Master)), and Price (Budget Verified).
+## Operational Protocol Sequence
+
+1. **DHCP Discover**: The client device broadcasts a DHCP Discover message. The Parameter Request List (PRL) includes either the newly allocated standalone Option code or Option 43, signaling its intent to perceive upstream capability profiles.
+2. **DHCP Offer**: The DHCP Server (hosted on the Master Device) replies with a DHCP Offer encapsulating the initial intelligence profiles in its option payload.
+3. **DHCP Request**: The client device selects the offer and transmits a DHCP Request to the DHCP server.
+4. **DHCP ACK**: The server commits the allocation via a DHCP ACK message to the client.
+5. **Extraction**:Upon receiving the final DHCPACK response, the client device terminates the state machine and extracts the target metadata.
+
+## Where the Mechanisms Diverge
 
 # Message Formats
 
-DHCP New Option Extension options convey the LLM Address, LLM Capability Level (Scale-Based), API Pricing, and LLM Primary/Standby Roles. The implementation methods include the following two approaches, both of which are viable options for product deployment:
+DHCP New Option Extension options convey the LLM Address, LLM Capability Level (Scale-Based), API Pricing, and LLM Primary/Standby Roles. The implementation methods include the following two approaches, they only differ in the message formats as follows:
 
 ## New DHCP Option Format (Standalone Option)
 
@@ -173,6 +190,8 @@ DHCP New Option Extension options convey the LLM Address, LLM Capability Level (
 ~~~~
 
 ## Field Attribute Interpretations
+
+The two implementation methods share the same payload formats as follows:
 
 LLM_Cap:
 : 1 byte. 0x01 indicates Active; 0x00 indicates Baseline.
