@@ -91,9 +91,10 @@ The diagram below illustrates a smart campus network topology.
 
 The deployment model implements an architecture structured as follows:
 
-Intelligence Hierarchy:
-: - **Master Device**: The Upstream Master Device (Core/GW) at the root of the network acts as the centralized intelligence, deploying physical hardware acceleration  to run the intelligent model. It simultaneously operates as the DHCP Server.
-: - **Client Devices**: The downstream elements, including the Access Switches and Wi-Fi7 APs at the network edge, operate as lightweight DHCP Clients. 
+**Master Device**: The Upstream Master Device (Core/GW) at the root of the network acts as the centralized intelligence, deploying physical hardware acceleration  to run the intelligent model. It simultaneously operates as the DHCP Server.
+
+**Client Device**: The downstream elements, including the Access Switches and Wi-Fi7 APs at the network edge, operate as lightweight DHCP Clients. 
+
 Note: The intermediate Aggregation Switches serve as transparent layer-2 or layer-3 transport elements only for transporting traffic.
 
 During the initial bootstrap phase, Client Devices broadcast standard DHCP Discover and Request messages up through the aggregation layer. These frames encapsulate the Parameter Request List (PRL), signaling their intent to discover upstream model intelligence profiles. In response, the Master Device transmits DHCP Offer and ACK messages down to the clients. This mechanism carries the newly extended option metadata, including model presence, parameter scale, deployment hierarchy roles, and operational cost structures back to the clients.
