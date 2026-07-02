@@ -37,21 +37,21 @@ informative:
 
 --- abstract
 
-This document specifies a DHCP option extension designed for campus networks to help client devices connect to a master device with Artificial Intelligence (AI) capabilities. The mechanism extends two specific parameters within the DHCP payload: the master device address information and the master device intelligent attribute identity. This allows client devices to identify and register to an AI-capable master device during the bootstrap phase, enabling them to utilize upstream AI capabilities and preventing the waste of master device processing resources.
+This document specifies a DHCP option extension designed for campus networks to help client devices connect to a master device with llm capabilities. The mechanism extends two specific parameters within the DHCP payload: the master device address information and the master device intelligent attribute identity. This allows client devices to identify and register to an llm-capable master device during the bootstrap phase, enabling them to utilize upstream llm capabilities and preventing the waste of master device processing resources.
 
 --- middle
 
 # Introduction
 
-A campus network refers to a local area network established within a specific area (such as an enterprise, science park, school, or hospital) to provide specific services or meet specific requirements. Network elements within a campus network are divided into master devices and client devices. client devices must discover and register to a master device to complete networking, while the master device manages multiple registered client devices. With the development of AI, at least one master device in the campus network possesses AI capabilities.
+A campus network refers to a local area network established within a specific area (such as an enterprise, science park, school, or hospital) to provide specific services or meet specific requirements. Network elements within a campus network are divided into master devices and client devices. client devices must discover and register to a master device to complete networking, while the master device manages multiple registered client devices. With the development of llm, at least one master device in the campus network possesses llm capabilities.
 
-In existing discovery and registration schemes, a client device selects a master device from multiple available options based solely on the discovery sequence or the current load conditions of the master devices. However, under these current practices, client devices cannot determine whether a master device possesses AI capabilities and may register to a non-AI-capable device. Consequently, client devices cannot request or utilize the AI capabilities of the master device and can only accept basic management, leading to a waste of the master device's AI resources.
+In existing discovery and registration schemes, a client device selects a master device from multiple available options based solely on the discovery sequence or the current load conditions of the master devices. However, under these current practices, client devices cannot determine whether a master device possesses llm capabilities and may register to a non-llm-capable device. Consequently, client devices cannot request or utilize the llm capabilities of the master device and can only accept basic management, leading to a waste of the master device's llm resources.
 
-To address this limitation, this document specifies a method for connecting to an AI-capable master device. The solution extends two distinct elements within the DHCP protocol payload:
+To address this limitation, this document specifies a method for connecting to an llm-capable master device. The solution extends two distinct elements within the DHCP protocol payload:
 1. **Master device address information**
 2. **Master device intelligent attribute identity**
 
-By delivering these two extensions during initial negotiation, client devices can successfully identify and connect to a master device with AI capabilities, allowing them to utilize upstream AI resources and avoiding the waste of computational capabilities.
+By delivering these two extensions during initial negotiation, client devices can successfully identify and connect to a master device with llm capabilities, allowing them to utilize upstream llm resources and avoiding the waste of computational capabilities.
 
 
 # Conventions and Definitions
@@ -140,10 +140,10 @@ Client Device                                                 DHCP Server
      v                                                             v
 [Extract direct / Extract through while or for using pointer]
      |
-     +--> Cap = 0x01 (Model Active)
-     +--> Scale = 0x0048 (72B Model)
-     +--> Role = 0x01 (Primary Master)
-     +--> Price = Budget Verified
+     +--> LLM_Cap = 0x01 (Model Active)
+     +--> LLM_Scale = 0x0048 (72B Model)
+     +--> LLM_Role = 0x01 (Primary Master)
+     +--> API_Price = Budget Verified
 ~~~~
 
 ## Operational Protocol Sequence
