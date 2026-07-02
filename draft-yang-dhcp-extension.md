@@ -57,16 +57,16 @@ This document defines the following terms:
 Master Device:
 : The central network hub (such as a core switch or gateway) equipped with hardware neural processing units. It hosts and executes the llm to perform configuration inference and network troubleshooting.
 Client Device:
-: The downstream edge elements (such as aggregation switches, access swicthes, and Wi-Fi Access Points) that are constrained by hardware cost and power limits. They delegate heavy text and logic processing to the Master Device.
+: The downstream edge elements (such as aggregation switches, access switches, and Wi-Fi Access Points) that are constrained by hardware cost and power limits. They delegate heavy text and logic processing to the Master Device.
 
-# Target Deployment Topology 
+# Target Deployment Topology
 
 The diagram below illustrates a smart campus network topology.
 
 ~~~~
                      +---------------------------------------+
                      |   Upstream Master Device (Core/GW)    |
-                     |          [Centralized NPU / LLM]      |
+                     |          [Centralized NPU / Model]    |
                      |         ====== DHCP Server ======     |
                      +---------------------------------------+
                                          |
