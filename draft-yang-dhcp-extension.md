@@ -107,14 +107,14 @@ Client Device                                                 DHCP Server
      |    (PRL includes New Option or Option 43)                   |
      |                                                             |
      |<-- 2. DHCP Offer -------------------------------------------|
-     |    (Carries Master Device Address Information               |
-     |     & Master Device Intelligent Attribute Identity)         |
+     |    (Carries the master device's address               |
+     |     & the master device's LLM configuration)         |
      |                                                             |
      |--- 3. DHCP Request ---------------------------------------->|
      |                                                             |
      |<-- 4. DHCP ACK ---------------------------------------------|
-     |    (Carries Master Device Address Information               |
-     |     & Master Device Intelligent Attribute Identity)         |
+     |    (Carries the master device's address               |
+     |     & the master device's LLM configuration)         |
      |                                                             |
      v                                                             v
 5. [Extract direct / Extract through while or for using pointer]
@@ -135,7 +135,7 @@ Client Device                                                 DHCP Server
 
 # Message Formats
 
-DHCP extensions convey the Master Device Address Information and the Master Device Intelligent Attribute Identity. The two implementation methods only differ in their message formats as follows:
+DHCP extensions convey the master device's address and the master device's LLM configuration. The two implementation methods only differ in their message formats as follows:
 
 ## New DHCP Option Format (Standalone Option)
 
@@ -181,7 +181,7 @@ DHCP extensions convey the Master Device Address Information and the Master Devi
 
 ### Field Attribute Interpretations
 
-**Master Device Address Information Parameters:**
+**the master device's address parameters:**
 
 Addr_Type:
 : 1 byte. 0x01 indicates IPv4 (4 bytes); 0x02 indicates IPv6 (16 bytes); 0x03 indicates FQDN.
@@ -189,7 +189,7 @@ Addr_Type:
 LLM_Dest_Port:
 : 2 bytes. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.
 
-**Master Device Intelligent Attribute Identity Parameters:**
+**the master device's LLM configuration parameters:**
 
 LLM_Cap:
 : 1 byte. 0x01 indicates Active; 0x00 indicates Baseline.
