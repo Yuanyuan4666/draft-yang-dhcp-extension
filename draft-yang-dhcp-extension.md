@@ -37,7 +37,7 @@ informative:
 
 --- abstract
 
-This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with LLM (Large Language Model). The mechanism extends two specific parameters within the DHCP payload: the master device address and the master device's LLM configuration. This allows client devices to identify and register to LLM-enabled master device during the bootstrap phase.
+This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with the LLM (Large Language Model). The mechanism extends two specific parameters within the DHCP payload: the master device address and the master device's LLM configuration. This allows client devices to identify and register to LLM-enabled master device during the bootstrap phase.
 
 --- middle
 
@@ -45,7 +45,7 @@ This document specifies a DHCP option extension designed for campus networks to 
 
 A campus network refers to a network established within a specific area, such as an enterprise, science park, school, or hospital. Network elements within a campus network are divided into master devices (such as core switch or a gateway) and client devices (such as access switch or AP). Client devices must discover and register to a master device to complete networking, while the master device manages multiple registered client devices. With the evolution of smart campuses, LLM inference capabilities are increasingly required to help network operation and maintenance, which are typically hosted on master devices equipped with dedicated NPU or GPU hardware acceleration.
 
-Currently, the master device's LLM address is manually configured via CLI or hardcoded into client devices. Standard DHCP lacks LLM awareness, meaning client devices cannot automatically identify which master devices possess LLM capabilities. Consequently, they may register to a non-LLM-capable device and cannot request or utilize the LLM capabilities of the master device for configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.
+Currently, the master device's LLM address is manually configured via CLI or hardcoded into client devices. Although standard DHCP automatically assigns basic parameters like IP addresses, subnets, and gateways, it cannot indicate whether a master device possesses LLM capabilities. Meaning client devices cannot automatically identify which master devices are LLM-enabled. Consequently, they may register to a non-LLM-enabled device and cannot request or utilize the LLM capabilities of the master device for network configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.
 
 To address this limitation, this document extends two distinct elements within the DHCP protocol payload, to help client devices distinguish and connect to a master device with LLM capabilities:
 1. **the master device's address**
@@ -60,7 +60,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 This document defines the following roles:
 
 **Master Device**:
-: The network element that hosts and executes the LLM to perform configuration and network troubleshooting inference, which operates as the DHCP Server. Master devices could be a core switch or gateway equipped with hardware neural processing units. 
+: The network element that hosts and executes the LLM to perform configuration and network troubleshooting inference, which operates as the DHCP Server. A master device could be a core switch or a gateway equipped with hardware neural processing units. 
 
 **Client Device**:
 : The network element that delegates heavy text and logic processing to the Master Device due to hardware cost and power limits, which operates as lightweight DHCP Client. Client Device could be an aggregation switch, access switch, or a Wi-Fi Access Point (distributive deployed).
@@ -128,10 +128,10 @@ Client Device                                                 DHCP Server
 ## Operational Protocol Sequence
 
 1. **DHCP Discover**: The client device broadcasts a DHCP Discover message. The Parameter Request List (PRL) includes either the newly allocated standalone Option code or Option 43, signaling its intent to perceive upstream capability profiles.
-2. **DHCP Offer**: The DHCP Server (hosted on the Master Device) replies with a DHCP Offer encapsulating the initial intelligence profiles in its option payload.
+2. **DHCP Offer**: The DHCP Server (hosted on the Master Device) replies with a DHCP Offer encapsulating the initial master device address and LLM configuration parameters in its extended option payload.
 3. **DHCP Request**: The client device selects the offer and transmits a DHCP Request to the DHCP server.
-4. **DHCP ACK**: The server commits the allocation via a DHCP ACK message to the client.
-5. **Extraction**:Upon receiving the final DHCPACK response, the client device terminates the state machine and extracts the target metadata.
+4. **DHCP ACK**: The DHCP Server commits the allocation and sends a DHCP ACK message to the client, carrying the definitive master device address and LLM configuration parameters in its extended option payload.
+5. **Extraction**:Upon receiving the final DHCPACK response, the client device extracts the master device's address parameters and the master device's LLM configuration parameters.
 
 # Message Formats
 
