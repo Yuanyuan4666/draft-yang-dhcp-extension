@@ -12,9 +12,9 @@ v: 3
 # area: AREA
 # workgroup: WG Working Group
 keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
+ - DHCP Extension
+ - LLM Capability
+ - Increase Automation
 venue:
 #  group: WG
 #  type: Working Group
@@ -37,55 +37,37 @@ informative:
 
 --- abstract
 
-This document specifies a DHCP option extension designed for campus networks to help client devices connect to a master device with llm capabilities. The mechanism extends two specific parameters within the DHCP payload: the master device address information and the master device intelligent attribute identity. This allows client devices to identify and register to an llm-capable master device during the bootstrap phase, enabling them to utilize upstream llm capabilities and preventing the waste of master device processing resources.
+This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with LLM (Large Language Model). The mechanism extends two specific parameters within the DHCP payload: the master device address and the master device's LLM configuration. This allows client devices to identify and register to LLM-enabled master device during the bootstrap phase.
 
 --- middle
 
 # Introduction
 
-A campus network refers to a local area network established within a specific area (such as an enterprise, science park, school, or hospital) to provide specific services or meet specific requirements. Network elements within a campus network are divided into master devices and client devices. client devices must discover and register to a master device to complete networking, while the master device manages multiple registered client devices. With the development of llm, at least one master device in the campus network possesses llm capabilities.
+A campus network refers to a network established within a specific area, such as an enterprise, science park, school, or hospital. Network elements within a campus network are divided into master devices (such as core switch or a gateway) and client devices (such as access switch or AP). Client devices must discover and register to a master device to complete networking, while the master device manages multiple registered client devices. With the evolution of smart campuses, LLM inference capabilities are increasingly required to help network operation and maintenance, which are typically hosted on master devices equipped with dedicated NPU or GPU hardware acceleration.
 
-In existing discovery and registration schemes, a client device selects a master device from multiple available options based solely on the discovery sequence or the current load conditions of the master devices. However, under these current practices, client devices cannot determine whether a master device possesses llm capabilities and may register to a non-llm-capable device. Consequently, client devices cannot request or utilize the llm capabilities of the master device and can only accept basic management, leading to a waste of the master device's llm resources.
+Currently, the master device's LLM address is manually configured via CLI or hardcoded into client devices. Standard DHCP lacks LLM awareness, meaning client devices cannot automatically identify which master devices possess LLM capabilities. Consequently, they may register to a non-LLM-capable device and cannot request or utilize the LLM capabilities of the master device for configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.
 
-To address this limitation, this document specifies a method for connecting to an llm-capable master device. The solution extends two distinct elements within the DHCP protocol payload:
-1. **Master device address information**
-2. **Master device intelligent attribute identity**
-
-By delivering these two extensions during initial negotiation, client devices can successfully identify and connect to a master device with llm capabilities, allowing them to utilize upstream llm resources and avoiding the waste of computational capabilities.
-
+To address this limitation, this document extends two distinct elements within the DHCP protocol payload, to help client devices distinguish and connect to a master device with LLM capabilities:
+1. **the master device's address**
+2. **the master device's LLM configuration**
 
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
 
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
 
-This document defines the following terms:
+This document defines the following roles:
 
 **Master Device**:
-: Master Device could be a core switch or gateway equipped with hardware neural processing units. It hosts and executes the llm to perform configuration inference and network troubleshooting.
+: The network element that hosts and executes the LLM to perform configuration and network troubleshooting inference, which operates as the DHCP Server. Master devices could be a core switch or gateway equipped with hardware neural processing units. 
 
 **Client Device**:
-: Client Device could be an aggregation switch, access switch, or a Wi-Fi Access Point (distributive deployed). Since they are constrained by hardware cost and power limits, they delegate heavy text and logic processing to the Master Device.
+: The network element that delegates heavy text and logic processing to the Master Device due to hardware cost and power limits, which operates as lightweight DHCP Client. Client Device could be an aggregation switch, access switch, or a Wi-Fi Access Point (distributive deployed).
 
-Note that Master Device is for generating policies while Client Device is for executing policies.
+# Typical Deployment Topology
 
-**Master Device Address Information**:
-: The network coordinates used by a Client Device to reach the Master Device. It includes:
-  * **Addr_Type**: Master devices' IPv4, IPv6, or FQDN addresses.
-  * **LLM_Dest_Port**: Specifies the destination transport port for the Master device with llm.
-
-**Master Device Intelligent Attribute Identity**:
-: The capability profile of the Master Device's llm. It includes:
-  * **LLM_Cap**: Indicates whether the model capability is active or at baseline.
-  * **LLM_Scale**: Represents the llm parameter size in billions (B).
-  * **LLM_Role**: Identifies the master device's role in a high-availability setup (Primary or Backup).
-  * **API_Price**: Indicates the financial cost per million tokens.
-    
-
-
-# Target Deployment Topology
-
-The diagram below illustrates a smart campus network topology.
+The diagram below illustrates a typical smart campus network topology.
 
 ~~~~
                      +---------------------------------------+
@@ -107,13 +89,10 @@ The diagram below illustrates a smart campus network topology.
 | [DHCP Client]    |  | [DHCP Client]    |            | [DHCP Client]    |  | [DHCP Client]    |
 +------------------+  +------------------+            +------------------+  +------------------+
 ~~~~
-## Topology Description
 
-The deployment model implements an architecture structured as follows:
+**Master Device**: The Upstream Master Device (Core/GW) at the root of the network acts as the centralized intelligence center, utilizing hardware acceleration to run the LLM.
 
-**Master Device**: The Upstream Master Device (Core/GW) at the root of the network acts as the centralized intelligence, deploying physical hardware acceleration  to run the intelligent model. It simultaneously operates as the DHCP Server.
-
-**Client Device**: The downstream elements, including the Access Switches and Wi-Fi7 APs at the network edge, operate as lightweight DHCP Clients. 
+**Client Device**: The downstream elements, including the Access Switches and Wi-Fi7 APs at the network edge. 
 
 Note: The intermediate Aggregation Switches serve as transparent layer-2 or layer-3 transport elements only for transporting traffic.
 
@@ -124,21 +103,21 @@ Two implementation methods can carry the required parameters within the protocol
 ~~~~
 Client Device                                                 DHCP Server
      |                                                             |
-     |--- DHCP Discover ------------------------------------------>|
-     |    (PRL includes New Option or Option 43)                    |
+     |--- 1. DHCP Discover --------------------------------------->|
+     |    (PRL includes New Option or Option 43)                   |
      |                                                             |
-     |<-- DHCP Offer ----------------------------------------------|
+     |<-- 2. DHCP Offer -------------------------------------------|
      |    (Carries Master Device Address Information               |
      |     & Master Device Intelligent Attribute Identity)         |
      |                                                             |
-     |--- DHCP Request ------------------------------------------->|
+     |--- 3. DHCP Request ---------------------------------------->|
      |                                                             |
-     |<-- DHCP ACK ------------------------------------------------|
+     |<-- 4. DHCP ACK ---------------------------------------------|
      |    (Carries Master Device Address Information               |
      |     & Master Device Intelligent Attribute Identity)         |
      |                                                             |
      v                                                             v
-[Extract direct / Extract through while or for using pointer]
+5. [Extract direct / Extract through while or for using pointer]
      |
      +--> LLM_Cap = 0x01 (Model Active)
      +--> LLM_Scale = 0x0048 (72B Model)
@@ -153,8 +132,6 @@ Client Device                                                 DHCP Server
 3. **DHCP Request**: The client device selects the offer and transmits a DHCP Request to the DHCP server.
 4. **DHCP ACK**: The server commits the allocation via a DHCP ACK message to the client.
 5. **Extraction**:Upon receiving the final DHCPACK response, the client device terminates the state machine and extracts the target metadata.
-
-## Where the Mechanisms Diverge
 
 # Message Formats
 
