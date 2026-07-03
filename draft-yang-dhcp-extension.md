@@ -60,7 +60,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 This document defines the following roles:
 
 **Master Device**:
-: The network element that hosts and executes the LLM to perform configuration and network troubleshooting inference, which operates as the DHCP Server. A master device could be a core switch or a gateway equipped with hardware neural processing units. 
+: The network element that hosts and executes the LLM to perform configuration and network troubleshooting inference, which operates as the DHCP Server. A master device could be a core switch or a gateway equipped with hardware neural processing units.
 
 **Client Device**:
 : The network element that delegates heavy text and logic processing to the Master Device due to hardware cost and power limits, which operates as lightweight DHCP Client. Client Device could be an aggregation switch, access switch, or a Wi-Fi Access Point (distributive deployed).
@@ -92,7 +92,7 @@ The diagram below illustrates a typical smart campus network topology.
 
 **Master Device**: The Upstream Master Device (Core/GW) at the root of the network acts as the centralized intelligence center, utilizing hardware acceleration to run the LLM.
 
-**Client Device**: The downstream elements, including the Access Switches and Wi-Fi7 APs at the network edge. 
+**Client Device**: The downstream elements, including the Access Switches and Wi-Fi7 APs at the network edge.
 
 Note: The intermediate Aggregation Switches serve as transparent layer-2 or layer-3 transport elements only for transporting traffic.
 
