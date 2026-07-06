@@ -1199,7 +1199,7 @@ svg {
 1. <strong>Data Privacy</strong>: Regulations prohibit uploading internal network topology and business traffic data to public clouds.
 2. <strong>High Latency</strong>: Cloud interactions over WAN (Wide Area Network) introduce high latency, failing the real-time requirements for network self-healing.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">To eliminate these bottlenecks, shifting LLM inference to the network edge is the current trend. Core switches and gateways are now equipped with NPU/GPU hardware. This distributed architecture keeps sensitive data within the campus and eliminates cloud latency, enabling real-time root-cause analysis and troubleshooting directly at the edge.<a href="#section-1-3" class="pilcrow">¶</a></p>
-<p id="section-1-4">Currently, the master device's LLM address is manually configured via CLI or hardcoded into client devices. Although standard DHCP automatically assigns basic parameters like IP addresses, subnets, and gateways, it cannot indicate whether a master device possesses LLM capabilities. This means that client devices cannot automatically identify which master devices are LLM-enabled. Consequently, they may register to a non-LLM-enabled device and cannot request or utilize the LLM capabilities of the master device for network configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-4">Currently, the master device's IP configuration attributes are manually configured via CLI or hardcoded into client devices. Although standard DHCP automatically assigns basic parameters like IP addresses, subnets, and gateways, it cannot indicate whether a master device possesses LLM capabilities. This means that client devices cannot automatically identify which master devices are LLM-enabled. Consequently, they may register to a non-LLM-enabled device and cannot request or utilize the LLM capabilities of the master device for network configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">To address this limitation, this document extends two distinct elements within the DHCP protocol payload through a new DHCP option, to help client devices distinguish and connect to a master device with LLM capabilities:
 1. <strong>the master device's LLM address</strong>
 2. <strong>the master device's LLM configuration</strong><a href="#section-1-5" class="pilcrow">¶</a></p>
@@ -1214,19 +1214,22 @@ svg {
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
 appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>", "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as described in BCP 14 <span><a href="#RFC8174" class="internal xref">RFC2119</a> [<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they appear in all capitals, as shown here.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-2">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>", "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>"
+in this document are to be interpreted as described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they appear in all capitals, as shown
+here.<a href="#section-2-2" class="pilcrow">¶</a></p>
 <p id="section-2-3">This document defines the following roles:<a href="#section-2-3" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-2-4">
         <dt id="section-2-4.1">
 <strong>Master Device</strong>:</dt>
         <dd style="margin-left: 1.5em" id="section-2-4.2">
-          <p id="section-2-4.2.1">The network element that hosts and executes the LLM to perform configuration and network troubleshooting inference, which operates as the DHCP Server. A master device could be a core switch or a gateway equipped with hardware neural processing units.<a href="#section-2-4.2.1" class="pilcrow">¶</a></p>
+          <p id="section-2-4.2.1">The network element that hosts and executes the LLM to process, analyze, and store network data at or near the physical location where the data is generated, which operates as the DHCP Server.
+A master device could be a core switch or a gateway equipped with hardware neural processing units.<a href="#section-2-4.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-2-4.3">
 <strong>Client Device</strong>:</dt>
         <dd style="margin-left: 1.5em" id="section-2-4.4">
-          <p id="section-2-4.4.1">The network element that delegates heavy text and logic processing to the Master Device due to hardware cost and power limits, which operates as lightweight DHCP Client. Client Device could be an aggregation switch, access switch, or a Wi-Fi Access Point (distributive deployed).<a href="#section-2-4.4.1" class="pilcrow">¶</a></p>
+          <p id="section-2-4.4.1">The network element that collect the data with limited processing and power capability, which operates as lightweight DHCP Client. Client Device could be an aggregation switch, access switch, or a Wi-Fi Access Point (distributive deployed).<a href="#section-2-4.4.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>

@@ -106,12 +106,12 @@ Table of Contents
    enabling real-time root-cause analysis and troubleshooting directly
    at the edge.
 
-   Currently, the master device's LLM address is manually configured via
-   CLI or hardcoded into client devices.  Although standard DHCP
-   automatically assigns basic parameters like IP addresses, subnets,
-   and gateways, it cannot indicate whether a master device possesses
-   LLM capabilities.  This means that client devices cannot
-   automatically identify which master devices are LLM-enabled.
+   Currently, the master device's IP configuration attributes are
+   manually configured via CLI or hardcoded into client devices.
+   Although standard DHCP automatically assigns basic parameters like IP
+   addresses, subnets, and gateways, it cannot indicate whether a master
+   device possesses LLM capabilities.  This means that client devices
+   cannot automatically identify which master devices are LLM-enabled.
    Consequently, they may register to a non-LLM-enabled device and
    cannot request or utilize the LLM capabilities of the master device
    for network configuration or troubleshooting, which also leads to a
@@ -134,22 +134,22 @@ Table of Contents
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
    "OPTIONAL" in this document are to be interpreted as described in BCP
-   14 RFC2119 [RFC8174] when, and only when, they appear in all
+   14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
    This document defines the following roles:
 
    *Master Device*:  The network element that hosts and executes the LLM
-      to perform configuration and network troubleshooting inference,
-      which operates as the DHCP Server.  A master device could be a
-      core switch or a gateway equipped with hardware neural processing
-      units.
+      to process, analyze, and store network data at or near the
+      physical location where the data is generated, which operates as
+      the DHCP Server.  A master device could be a core switch or a
+      gateway equipped with hardware neural processing units.
 
-   *Client Device*:  The network element that delegates heavy text and
-      logic processing to the Master Device due to hardware cost and
-      power limits, which operates as lightweight DHCP Client.  Client
-      Device could be an aggregation switch, access switch, or a Wi-Fi
-      Access Point (distributive deployed).
+   *Client Device*:  The network element that collect the data with
+      limited processing and power capability, which operates as
+      lightweight DHCP Client.  Client Device could be an aggregation
+      switch, access switch, or a Wi-Fi Access Point (distributive
+      deployed).
 
 3.  Typical Deployment Topology
 
