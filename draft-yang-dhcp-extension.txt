@@ -280,8 +280,8 @@ Client Device                                                 DHCP Server
       IPv6 address/FQDN of the LLM service endpoint hosted on the master
       device.  If Addr_Type is 0x01, it MUST be a 4-byte IPv4 address;
       If Addr_Type is 0x02, it MUST be a 16-byte IPv6 address; If
-      Addr_Type is 0x03, it MUST be a DNS-encoded FQDN (as specified in
-      RFC 3315).
+      Addr_Type is 0x03, it MUST be a DNS-encoded FQDN(as specified in
+      [RFC1035]).
 
    *the master device's LLM configuration parameters:*
 
