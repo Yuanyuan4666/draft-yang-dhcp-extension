@@ -128,7 +128,7 @@ DHCP extensions convey the master device's LLM address and the master device's L
 +---------------+-------------------------------+---------------+
 |                      API_Price                                |
 +-------------------------------+--------------+----------------+
-|       LLM_Dest_Port           |   Addr_Type  |                |
+|            Dest_Port          |   Addr_Type  |                |
 +-------------------------------+--------------+                |
 |                                                               |
 |           Address / Domain Name (Variable Length...)          |
@@ -143,7 +143,7 @@ DHCP extensions convey the master device's LLM address and the master device's L
 Addr_Type:
 : 1 byte. Indicates the format of the following Address/Domain Name. 0x01 indicates IPv4 (4 bytes); 0x02 indicates IPv6 (16 bytes); 0x03 indicates fully qualified domain name (FQDN).
 
-LLM_Dest_Port:
+Dest_Port:
 : 2 bytes. Indicates the port used to access the LLM service. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.
 
 Address / Domain Name:
