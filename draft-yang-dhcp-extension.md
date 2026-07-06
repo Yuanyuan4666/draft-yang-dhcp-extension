@@ -30,6 +30,16 @@ author:
     email: "yangyuanyuan55@huawei.com"
 
 normative:
+  RFC2119:
+    title: "Key words for use in RFCs to Indicate Requirement Levels"
+  RFC8174:
+    title: "Ambiguity of Uppercase %BCP14 Keywords should be Avoided"
+  RFC2132:
+    title: "DHCP Options and BOOTP Vendor Extensions"
+  RFC1035:
+    title: "Domain Names - Implementation and Specification"
+  RFC3118:
+    title: "Authentication for DHCP Messages"
 
 informative:
 
@@ -82,18 +92,18 @@ The diagram below illustrates a typical smart campus network topology.
                      |         ====== DHCP Server ======     |
                      +---------------------------------------+
                                          |
-               __________________________|__________________________
-              |                                                     |
-   +----------------------+                              +----------------------+
-   | Aggregation Switch A |                              | Aggregation Switch B |
-   +----------------------+                              +----------------------+
-              |                                                     |
-        ______|________________                               ______|________________
-       |                      |                              |                      |
-+------------------+  +------------------+            +------------------+  +------------------+
-|  Access Switch   |  |    Wi-Fi7 AP     |            |  Access Switch   |  |    Wi-Fi7 AP     |
-| [DHCP Client]    |  | [DHCP Client]    |            | [DHCP Client]    |  | [DHCP Client]    |
-+------------------+  +------------------+            +------------------+  +------------------+
+                               __________|__________________________
+                              |                                     |
+   +----------------------+                               +----------------------+
+   | Aggregation Switch A |                               | Aggregation Switch B |
+   +----------------------+                               +----------------------+
+              |                                                      |
+        ______|________________                                ______|________________
+       |                      |                               |                      |
++------------------+  +------------------+             +------------------+  +------------------+
+|   Access Switch  |  |     Wi-Fi7 AP    |             |   Access Switch  |  |     Wi-Fi7 AP    |
+| [DHCP Client]    |  | [DHCP Client]    |             | [DHCP Client]    |  | [DHCP Client]    |
++------------------+  +------------------+             +------------------+  +------------------+
 ~~~~
 
 **Master Device**: The Upstream Master Device (Core/GW) at the root of the network acts as the centralized intelligence center, utilizing hardware acceleration to run the LLM.
@@ -158,7 +168,7 @@ API_Price:
 If a DHCP client requires the LLM metadata, it MUST include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in [RFC2132]. When a DHCP client receives OPTION_LLM_META, it MUST perform the following validation checks:
 * Verify that the `Option-Length` matches the required structure minimums defined in this document.
 * If `Addr_Type` is 0x03 (FQDN), verify that the Address / Domain Name field does not exceed 255 octets and represents a properly formatted domain name as specified in [RFC1035].
-  
+
 # Server Behavior
 
 A DHCP server supporting this specification MUST be capable of configuring and storing the LLM metadata, including the master device's LLM address and the master device's LLM configuration parameters. This extension does not introduce any new DHCP message types. The server processing logic MUST comply with the followings:
