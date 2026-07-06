@@ -27,7 +27,7 @@
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.1
+    wcwidth 0.8.2
 -->
 <link href="draft-yang-dhcp-extension.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1210,11 +1210,15 @@ svg {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">A campus network refers to a network established within a specific area, such as an enterprise, science park, school, or hospital. Network elements within a campus network are divided into master devices (such as core switch or a gateway) and client devices (such as access switch or AP). Client devices must discover and register to a master device to complete networking, while the master device manages multiple registered client devices. With the evolution of smart campuses, LLM inference capabilities are increasingly required to help network operation and maintenance, which are typically hosted on master devices equipped with dedicated NPU or GPU hardware acceleration.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Currently, the master device's LLM address is manually configured via CLI or hardcoded into client devices. Although standard DHCP automatically assigns basic parameters like IP addresses, subnets, and gateways, it cannot indicate whether a master device possesses LLM capabilities. This means that client devices cannot automatically identify which master devices are LLM-enabled. Consequently, they may register to a non-LLM-enabled device and cannot request or utilize the LLM capabilities of the master device for network configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">To address this limitation, this document extends two distinct elements within the DHCP protocol payload, to help client devices distinguish and connect to a master device with LLM capabilities:
+<p id="section-1-1">A campus network refers to a network established within a specific area, such as an enterprise, science park, school, or hospital. Network elements within a campus network are divided into master devices (such as a core switch or a gateway) and client devices (such as an access switch or an AP). Client devices must discover and register to a master device to complete networking, while the master device manages multiple registered client devices.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">Centralized campus Artificial Intelligence for IT Operations (AIOps) relies on cloud data centers. Local devices upload logs and alarms to the cloud for LLM analysis. This introduces two pitfalls:
+1. <strong>Data Privacy</strong>: Regulations prohibit uploading internal network topology and business traffic data to public clouds.
+2. <strong>High Latency</strong>: Cloud interactions over WAN (Wide Area Network) introduce high latency, failing the real-time requirements for network self-healing.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">To eliminate these bottlenecks, shifting LLM inference to the network edge is the current trend. Core switches and gateways are now equipped with NPU/GPU hardware. This distributed architecture keeps sensitive data within the campus and eliminates cloud latency, enabling real-time root-cause analysis and troubleshooting directly at the edge.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">Currently, the master device's LLM address is manually configured via CLI or hardcoded into client devices. Although standard DHCP automatically assigns basic parameters like IP addresses, subnets, and gateways, it cannot indicate whether a master device possesses LLM capabilities. This means that client devices cannot automatically identify which master devices are LLM-enabled. Consequently, they may register to a non-LLM-enabled device and cannot request or utilize the LLM capabilities of the master device for network configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">To address this limitation, this document extends two distinct elements within the DHCP protocol payload, to help client devices distinguish and connect to a master device with LLM capabilities:
 1. <strong>the master device's address</strong>
-2. <strong>the master device's LLM configuration</strong><a href="#section-1-3" class="pilcrow">¶</a></p>
+2. <strong>the master device's LLM configuration</strong><a href="#section-1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -1254,7 +1258,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <pre>
                      +---------------------------------------+
                      |   Upstream Master Device (Core/GW)    |
-                     |          [Centralized NPU / Model]    |
+                     |   [Centralized NPU or NPU / Model]    |
                      |         ====== DHCP Server ======     |
                      +---------------------------------------+
                                          |
