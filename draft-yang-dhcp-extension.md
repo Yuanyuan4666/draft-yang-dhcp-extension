@@ -194,7 +194,7 @@ API_Price:
 
 If a DHCP client requires the LLM metadata, it MUST include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in RFC 2132.
 
-When a DHCP client receives OPTION_LLM_META, it MUST verify that if `Addr_Type` is 0x03 (FQDN), then the option length is no more than 256 octets (the maximum length of a single fully qualified domain name (FQDN) allowed by the DNS), and that the LLM domain name is a properly encoded single FQDN, as specified in Section 8 of RFC 3315 ("Representation and Use of Domain Names") [RFC3315].
+When a DHCP client receives OPTION_LLM_META, it MUST verify that if `Addr_Type` is 0x03 (FQDN), then the option length is no more than 256 octets (the maximum length of a single FQDN allowed by the DNS), and that the LLM domain name is a properly encoded single FQDN, as specified in Section 8 of RFC 3315 ("Representation and Use of Domain Names") [RFC3315].
 
 # Security Considerations
 
