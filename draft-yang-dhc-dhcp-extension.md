@@ -56,7 +56,9 @@ This document specifies a DHCP option extension designed for campus networks to 
 A campus network refers to a network established within a specific area, such as an enterprise, science park, school, or hospital. Network elements within a campus network are divided into master devices (such as a core switch or a gateway) and client devices (such as an access switch or an AP). Client devices must discover and register to a master device to complete networking, while the master device manages multiple registered client devices.
 
 Centralized campus Artificial Intelligence for IT Operations (AIOps) relies on cloud data centers. Local devices upload logs and alarms to the cloud for LLM analysis. This introduces two pitfalls:
+
 1. **Data Privacy**: Regulations prohibit uploading internal network topology and business traffic data to public clouds.
+
 2. **High Latency**: Cloud interactions over WAN (Wide Area Network) introduce high latency, failing the real-time requirements for network self-healing.
 
 To eliminate these bottlenecks, shifting LLM inference to the network edge is the current trend. Core switches and gateways are now equipped with NPU/GPU hardware. This distributed architecture keeps sensitive data within the campus and eliminates cloud latency, enabling real-time root-cause analysis and troubleshooting directly at the edge.
@@ -150,7 +152,7 @@ Dest_Port:
 : 2 bytes. Indicates the port used to access the LLM service. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.
 
 Address / Domain Name:
-: Variable length. Contains the IPv4 address/IPv6 address/FQDN of the master device. If Addr_Type is 0x01, it MUST be a 4-byte IPv4 address; If Addr_Type is 0x02, it MUST be a 16-byte IPv6 address; If Addr_Type is 0x03, it MUST be a DNS-encoded FQDN(as specified in [RFC1035]).
+: Variable length. Contains the IPv4 address/IPv6 address/FQDN of the master device. If Addr_Type is 0x01, it MUST be a 4-byte IPv4 address; If Addr_Type is 0x02, it MUST be a 16-byte IPv6 address; If Addr_Type is 0x03, it MUST be a DNS-encoded FQDN(as specified in {{!RFC1035}}).
 
 **the master device's LLM configuration parameters:**
 
@@ -168,9 +170,9 @@ API_Price:
 
 # Client Behavior
 
-If a DHCP client requires the LLM metadata, it MUST include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in [RFC2132]. When a DHCP client receives OPTION_LLM_META, it MUST perform the following validation checks:
+If a DHCP client requires the LLM metadata, it MUST include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in {{!RFC2132}}. When a DHCP client receives OPTION_LLM_META, it MUST perform the following validation checks:
 * Verify that the `Option-Length` matches the required structure minimums defined in this document.
-* If `Addr_Type` is 0x03 (FQDN), verify that the Address / Domain Name field does not exceed 255 octets and represents a properly formatted domain name as specified in [RFC1035].
+* If `Addr_Type` is 0x03 (FQDN), verify that the Address / Domain Name field does not exceed 255 octets and represents a properly formatted domain name as specified in {{!RFC1035}}.
 
 # Server Behavior
 
@@ -181,7 +183,7 @@ A DHCP server supporting this specification MUST be capable of configuring and s
 
 # Security Considerations
 
-The communication between the DHCP client and the DHCP server for exchanging LLM address and configuration parameters is security sensitive and requires server authentication and integrity protection. DHCPv4 authentication mechanisms specified in [RFC3118] can be used for this purpose.
+The communication between the DHCP client and the DHCP server for exchanging LLM address and configuration parameters is security sensitive and requires server authentication and integrity protection. DHCPv4 authentication mechanisms specified in {{!RFC3118}} can be used for this purpose.
 
 # IANA Considerations
 
