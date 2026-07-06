@@ -102,43 +102,6 @@ The diagram below illustrates a typical smart campus network topology.
 
 Note: The intermediate Aggregation Switches serve as transparent layer-2 or layer-3 transport elements only for transporting traffic.
 
-# Protocol Flow
-
-The discovery mechanism utilizes a new DHCP Option to carry the required parameters within the protocol payload. The process follows the standard DHCP sequence below:
-
-~~~~
-Client Device                                                 DHCP Server
-     |                                                             |
-     |--- 1. DHCP Discover --------------------------------------->|
-     |    (PRL includes New Option_LLM_META)                       |
-     |                                                             |
-     |<-- 2. DHCP Offer -------------------------------------------|
-     |    (Carries the master device's LLM address                 |
-     |     & the master device's LLM configuration)                |
-     |                                                             |
-     |--- 3. DHCP Request ---------------------------------------->|
-     |                                                             |
-     |<-- 4. DHCP ACK ---------------------------------------------|
-     |    (Carries the master device's LLM address                 |
-     |     & the master device's LLM configuration)                |
-     |                                                             |
-     v                                                             v
-5. [Extract direct using fixed field offset]
-     |
-     +--> LLM_Cap = 0x01 (Model Active)
-     +--> LLM_Scale = 0x0048 (72B Model)
-     +--> LLM_Role = 0x01 (Primary Master)
-     +--> API_Price = Budget Verified
-~~~~
-
-## Operational Protocol Sequence
-
-1. **DHCP Discover**: The client device broadcasts a DHCP Discover message. The Parameter Request List (PRL) includes the newly allocated Option code (OPTION_LLM_META), signaling its intent to perceive upstream capability profiles.
-2. **DHCP Offer**: The DHCP Server (hosted on the Master Device) replies with a DHCP Offer encapsulating the initial master device's LLM address and LLM configuration parameters in its extended option payload.
-3. **DHCP Request**: The client device selects the offer and transmits a DHCP Request to the DHCP server.
-4. **DHCP ACK**: The DHCP Server commits the allocation and sends a DHCP ACK message to the client, carrying the definitive master device's LLM address and LLM configuration parameters in its extended option payload.
-5. **Extraction**:Upon receiving the final DHCPACK response, the client device extracts the master device's LLM address parameters and the master device's LLM configuration parameters directly using fixed offsets.
-
 # Message Formats
 
 DHCP extensions convey the master device's LLM address and the master device's LLM configuration. The format of the new DHCP option (OPTION_LLM_META) is defined as follows:
@@ -174,7 +137,7 @@ LLM_Dest_Port:
 : 2 bytes. Indicates the port used to access the LLM service. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.
 
 Address / Domain Name:
-: Variable length. Contains the IPv4 address/IPv6 address/FQDN of the LLM service endpoint hosted on the master device. If Addr_Type is 0x01, it MUST be a 4-byte IPv4 address; If Addr_Type is 0x02, it MUST be a 16-byte IPv6 address; If Addr_Type is 0x03, it MUST be a DNS-encoded FQDN(as specified in [RFC1035]).
+: Variable length. Contains the IPv4 address/IPv6 address/FQDN of the master device. If Addr_Type is 0x01, it MUST be a 4-byte IPv4 address; If Addr_Type is 0x02, it MUST be a 16-byte IPv6 address; If Addr_Type is 0x03, it MUST be a DNS-encoded FQDN(as specified in [RFC1035]).
 
 **the master device's LLM configuration parameters:**
 
@@ -195,6 +158,13 @@ API_Price:
 If a DHCP client requires the LLM metadata, it MUST include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in [RFC2132]. When a DHCP client receives OPTION_LLM_META, it MUST perform the following validation checks:
 * Verify that the `Option-Length` matches the required structure minimums defined in this document.
 * If `Addr_Type` is 0x03 (FQDN), verify that the Address / Domain Name field does not exceed 255 octets and represents a properly formatted domain name as specified in [RFC1035].
+  
+# Server Behavior
+
+A DHCP server supporting this specification MUST be capable of configuring and storing the LLM metadata, including the master device's LLM address and the master device's LLM configuration parameters. This extension does not introduce any new DHCP message types. The server processing logic MUST comply with the followings:
+
+* Upon receiving a DHCP DISCOVER or DHCP REQUEST message, the server MUST inspect the PRL option. If OPTION_LLM_META is specified in the PRL, the server SHOULD append this option into its corresponding DHCP OFFER and DHCP ACK responses.
+* If a client does not request OPTION_LLM_META in its PRL, or if the server itself is not configured with LLM capabilities, the server MUST NOT include OPTION_LLM_META in its reply messages.
 
 # Security Considerations
 
