@@ -200,7 +200,7 @@ When a DHCP client receives OPTION_LLM_META, it MUST perform the following valid
 
 # Security Considerations
 
-The communication between the DHCP client and the DHCP server for the exchange of LLM address and configuration parameters is security sensitive and requires serve rauthentication and integrity protection. DHCPv6 security as described in RFC3315 can be used for this purpose. For DHCPv4 deployments, authentication mechanisms specified in RFC 3118 can be used for this purpose.
+The communication between the DHCP client and the DHCP server for the exchange of LLM address and configuration parameters is security sensitive and requires serve rauthentication and integrity protection. DHCPv6 security as described in [RFC3315] can be used for this purpose. For DHCPv4 deployments, authentication mechanisms specified in [RFC3118] can be used for this purpose.
 
 # IANA Considerations
 
