@@ -1287,7 +1287,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 +---------------+-------------------------------+---------------+
 |                      API_Price                                |
 +-------------------------------+--------------+----------------+
-|       LLM_Dest_Port           |   Addr_Type  |                |
+|            Dest_Port          |   Addr_Type  |                |
 +-------------------------------+--------------+                |
 |                                                               |
 |           Address / Domain Name (Variable Length...)          |
@@ -1307,7 +1307,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
               <p id="section-4.1.1-2.2.1">1 byte. Indicates the format of the following Address/Domain Name. 0x01 indicates IPv4 (4 bytes); 0x02 indicates IPv6 (16 bytes); 0x03 indicates fully qualified domain name (FQDN).<a href="#section-4.1.1-2.2.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
-<dt id="section-4.1.1-2.3">LLM_Dest_Port:</dt>
+<dt id="section-4.1.1-2.3">Dest_Port:</dt>
             <dd style="margin-left: 1.5em" id="section-4.1.1-2.4">
               <p id="section-4.1.1-2.4.1">2 bytes. Indicates the port used to access the LLM service. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.<a href="#section-4.1.1-2.4.1" class="pilcrow">¶</a></p>
 </dd>
