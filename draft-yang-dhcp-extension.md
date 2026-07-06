@@ -30,6 +30,16 @@ author:
     email: "yangyuanyuan55@huawei.com"
 
 normative:
+  RFC2119:
+    title: "Key words for use in RFCs to Indicate Requirement Levels"
+  RFC8174:
+    title: "Ambiguity of Uppercase %BCP14 Keywords should be Avoided"
+  RFC2132:
+    title: "DHCP Options and BOOTP Vendor Extensions"
+  RFC1035:
+    title: "Domain Names - Implementation and Specification"
+  RFC3118:
+    title: "Authentication for DHCP Messages"
 
 informative:
 
@@ -37,7 +47,7 @@ informative:
 
 --- abstract
 
-This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with the LLM (Large Language Model). The mechanism extends two specific parameters within the DHCP payload: the master device address and the master device's LLM configuration. This allows client devices to identify and register to LLM-enabled master device during the bootstrap phase.
+This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with the LLM (Large Language Model). The mechanism extends a new DHCP option containing two specific parameters within the DHCP payload: the master device's LLM address and the master device's LLM configuration. This allows client devices to identify and register to LLM-enabled master device during the bootstrap phase.
 
 --- middle
 
@@ -53,8 +63,8 @@ To eliminate these bottlenecks, shifting LLM inference to the network edge is th
 
 Currently, the master device's IP configuration attributes are manually configured via CLI or hardcoded into client devices. Although standard DHCP automatically assigns basic parameters like IP addresses, subnets, and gateways, it cannot indicate whether a master device possesses LLM capabilities. This means that client devices cannot automatically identify which master devices are LLM-enabled. Consequently, they may register to a non-LLM-enabled device and cannot request or utilize the LLM capabilities of the master device for network configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.
 
-To address this limitation, this document extends two distinct elements within the DHCP protocol payload, to help client devices distinguish and connect to a master device with LLM capabilities:
-1. **the master device's address**
+To address this limitation, this document extends two distinct elements within the DHCP protocol payload through a new DHCP option, to help client devices distinguish and connect to a master device with LLM capabilities:
+1. **the master device's LLM address**
 2. **the master device's LLM configuration**
 
 # Conventions and Definitions
@@ -85,18 +95,18 @@ The diagram below illustrates a typical smart campus network topology.
                      |         ====== DHCP Server ======     |
                      +---------------------------------------+
                                          |
-               __________________________|__________________________
-              |                                                     |
-   +----------------------+                              +----------------------+
-   | Aggregation Switch A |                              | Aggregation Switch B |
-   +----------------------+                              +----------------------+
-              |                                                     |
-        ______|________________                               ______|________________
-       |                      |                              |                      |
-+------------------+  +------------------+            +------------------+  +------------------+
-|  Access Switch   |  |    Wi-Fi7 AP     |            |  Access Switch   |  |    Wi-Fi7 AP     |
-| [DHCP Client]    |  | [DHCP Client]    |            | [DHCP Client]    |  | [DHCP Client]    |
-+------------------+  +------------------+            +------------------+  +------------------+
+             ____________________________|___________________________
+             |                                                       |
+   +----------------------+                               +----------------------+
+   | Aggregation Switch A |                               | Aggregation Switch B |
+   +----------------------+                               +----------------------+
+              |                                                      |
+        ______|________________                                ______|________________
+       |                      |                               |                      |
++------------------+  +------------------+             +------------------+  +------------------+
+|   Access Switch  |  |     Wi-Fi7 AP    |             |   Access Switch  |  |     Wi-Fi7 AP    |
+| [DHCP Client]    |  | [DHCP Client]    |             | [DHCP Client]    |  | [DHCP Client]    |
++------------------+  +------------------+             +------------------+  +------------------+
 ~~~~
 
 **Master Device**: The Upstream Master Device (Core/GW) at the root of the network acts as the centralized intelligence center, utilizing hardware acceleration to run the LLM.
@@ -105,48 +115,11 @@ The diagram below illustrates a typical smart campus network topology.
 
 Note: The intermediate Aggregation Switches serve as transparent layer-2 or layer-3 transport elements only for transporting traffic.
 
-# Protocol Flow
-
-Two implementation methods can carry the required parameters within the protocol payload: a standalone new DHCP Option or a sub-option extension within the existing Vendor-Specific Information Option (Option 43). Both methods follow the identical standard DHCP sequence below, differing only in the specific Option code requested and returned:
-
-~~~~
-Client Device                                                 DHCP Server
-     |                                                             |
-     |--- 1. DHCP Discover --------------------------------------->|
-     |    (PRL includes New Option or Option 43)                   |
-     |                                                             |
-     |<-- 2. DHCP Offer -------------------------------------------|
-     |    (Carries the master device's address                     |
-     |     & the master device's LLM configuration)                |
-     |                                                             |
-     |--- 3. DHCP Request ---------------------------------------->|
-     |                                                             |
-     |<-- 4. DHCP ACK ---------------------------------------------|
-     |    (Carries the master device's address                     |
-     |     & the master device's LLM configuration)                |
-     |                                                             |
-     v                                                             v
-5. [Extract direct / Extract through while or for using pointer]
-     |
-     +--> LLM_Cap = 0x01 (Model Active)
-     +--> LLM_Scale = 0x0048 (72B Model)
-     +--> LLM_Role = 0x01 (Primary Master)
-     +--> API_Price = Budget Verified
-~~~~
-
-## Operational Protocol Sequence
-
-1. **DHCP Discover**: The client device broadcasts a DHCP Discover message. The Parameter Request List (PRL) includes either the newly allocated standalone Option code or Option 43, signaling its intent to perceive upstream capability profiles.
-2. **DHCP Offer**: The DHCP Server (hosted on the Master Device) replies with a DHCP Offer encapsulating the initial master device address and LLM configuration parameters in its extended option payload.
-3. **DHCP Request**: The client device selects the offer and transmits a DHCP Request to the DHCP server.
-4. **DHCP ACK**: The DHCP Server commits the allocation and sends a DHCP ACK message to the client, carrying the definitive master device address and LLM configuration parameters in its extended option payload.
-5. **Extraction**:Upon receiving the final DHCPACK response, the client device extracts the master device's address parameters and the master device's LLM configuration parameters.
-
 # Message Formats
 
-DHCP extensions convey the master device's address and the master device's LLM configuration. The two implementation methods only differ in their message formats as follows:
+DHCP extensions convey the master device's LLM address and the master device's LLM configuration. The format of the new DHCP option (OPTION_LLM_META) is defined as follows:
 
-## New DHCP Option Format (Standalone Option)
+## New DHCP Option Format (OPTION_LLM_META)
 
 ~~~~
 0                   1                   2                   3
@@ -158,7 +131,7 @@ DHCP extensions convey the master device's address and the master device's LLM c
 +---------------+-------------------------------+---------------+
 |                      API_Price                                |
 +-------------------------------+--------------+----------------+
-|       LLM_Dest_Port           |   Addr_Type  |                |
+|            Dest_Port          |   Addr_Type  |                |
 +-------------------------------+--------------+                |
 |                                                               |
 |           Address / Domain Name (Variable Length...)          |
@@ -166,37 +139,18 @@ DHCP extensions convey the master device's address and the master device's LLM c
 +---------------------------------------------------------------+
 ~~~~
 
-## Alternative Sub-option Format (Extension via Option 43)
-
-~~~~
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-------------------------------+-------------------------------+
-| Type = 43 (Vendor-Specific)   | Main Option-Length            |
-+-------------------------------+-------------------------------+
-| SubType=0x01  | SubLen=0x01   | LLM_Cap(0x01) | SubType=0x02  | <-- Sub-TLV 1
-+-------------------------------+-------------------------------+
-| SubLen=0x02   |          LLM_Scale (2 Bytes)  | SubType=0x03  | <-- Sub-TLV 2
-+-------------------------------+-------------------------------+
-| SubLen=0x01   | LLM_Role      | SubType=0x04  | SubLen=0x04   | <-- Sub-TLV 3
-+-------------------------------+-------------------------------+
-|                    API_Price (4 bytes)                        | <-- Sub-TLV 4
-+-------------------------------+-------------------------------+
-| SubType=0x05  | SubLen=0x02   |     LLM_Dest_Port             | <-- Sub-TLV 5
-+-------------------------------+-------------------------------+
-| SubType=0x06  | SubLen=Var    | Address/Domain (Variable...)  | <-- Sub-TLV 6
-+-------------------------------+-------------------------------+
-~~~~
-
 ### Field Attribute Interpretations
 
-**the master device's address parameters:**
+**the master device's LLM address parameters:**
 
 Addr_Type:
-: 1 byte. 0x01 indicates IPv4 (4 bytes); 0x02 indicates IPv6 (16 bytes); 0x03 indicates FQDN.
+: 1 byte. Indicates the format of the following Address/Domain Name. 0x01 indicates IPv4 (4 bytes); 0x02 indicates IPv6 (16 bytes); 0x03 indicates fully qualified domain name (FQDN).
 
-LLM_Dest_Port:
-: 2 bytes. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.
+Dest_Port:
+: 2 bytes. Indicates the port used to access the LLM service. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.
+
+Address / Domain Name:
+: Variable length. Contains the IPv4 address/IPv6 address/FQDN of the master device. If Addr_Type is 0x01, it MUST be a 4-byte IPv4 address; If Addr_Type is 0x02, it MUST be a 16-byte IPv6 address; If Addr_Type is 0x03, it MUST be a DNS-encoded FQDN(as specified in [RFC1035]).
 
 **the master device's LLM configuration parameters:**
 
@@ -212,29 +166,26 @@ LLM_Role:
 API_Price:
 : 4 bytes. 0x0000000A represents the monetary cost per million tokens.
 
-# Deployment Architecture Comparison
+# Client Behavior
 
-## Pros of Standalone New DHCP Option
+If a DHCP client requires the LLM metadata, it MUST include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in [RFC2132]. When a DHCP client receives OPTION_LLM_META, it MUST perform the following validation checks:
+* Verify that the `Option-Length` matches the required structure minimums defined in this document.
+* If `Addr_Type` is 0x03 (FQDN), verify that the Address / Domain Name field does not exceed 255 octets and represents a properly formatted domain name as specified in [RFC1035].
 
-* Cleaner design without nesting attributes inside complex structures.
-* Fixed field offsets allow network chipsets to parse LLM metadata directly, eliminating pointer iterations that introduce latency and hardware memory consumption.
-* No requirement to allocate 2 bytes for single attribute containers (subtype + sublen) across every field, resulting in lower overall packet size overhead.
+# Server Behavior
 
-## Pros of New Extension via Option 43
+A DHCP server supporting this specification MUST be capable of configuring and storing the LLM metadata, including the master device's LLM address and the master device's LLM configuration parameters. This extension does not introduce any new DHCP message types. The server processing logic MUST comply with the followings:
 
-* Does not require a scarce global Option assignment from IANA.
-* Legacy devices (e.g., intermediate DHCP relays) can natively recognize and forward Option 43 by treating it as an existing vendor container.
-* Provides highly extensible fields; easy to add, remove, or modify new LLM attributes without breaking the main protocol container structure.
+* Upon receiving a DHCP DISCOVER or DHCP REQUEST message, the server MUST inspect the PRL option. If OPTION_LLM_META is specified in the PRL, the server SHOULD append this option into its corresponding DHCP OFFER and DHCP ACK responses.
+* If a client does not request OPTION_LLM_META in its PRL, or if the server itself is not configured with LLM capabilities, the server MUST NOT include OPTION_LLM_META in its reply messages.
 
 # Security Considerations
 
-TBD
+The communication between the DHCP client and the DHCP server for exchanging LLM address and configuration parameters is security sensitive and requires server authentication and integrity protection. DHCPv4 authentication mechanisms specified in [RFC3118] can be used for this purpose.
 
 # IANA Considerations
 
-This document requests IANA to allocate a new DHCP Option code from the standardized range (224 to 254) for the standalone option format, or alternatively register the sub-option definitions within the Option 43 internal sub-option registry space.
-
---- back
+IANA is requested to assign a new DHCP Option code for OPTION_LLM_META from the "BOOTP Vendor Extensions and DHCP Options" registry maintained at http://www.iana.org/.
 
 # Acknowledgments
 {:numbered="false"}
