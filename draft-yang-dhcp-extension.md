@@ -133,7 +133,7 @@ Client Device                                                 DHCP Server
 
 ## Operational Protocol Sequence
 
-1. **DHCP Discover**: The client device broadcasts a DHCP Discover message. The Parameter Request List (PRL) includes either the newly allocated Option code (OPTION_LLM_META), signaling its intent to perceive upstream capability profiles.
+1. **DHCP Discover**: The client device broadcasts a DHCP Discover message. The Parameter Request List (PRL) includes the newly allocated Option code (OPTION_LLM_META), signaling its intent to perceive upstream capability profiles.
 2. **DHCP Offer**: The DHCP Server (hosted on the Master Device) replies with a DHCP Offer encapsulating the initial master device's LLM address and LLM configuration parameters in its extended option payload.
 3. **DHCP Request**: The client device selects the offer and transmits a DHCP Request to the DHCP server.
 4. **DHCP ACK**: The DHCP Server commits the allocation and sends a DHCP ACK message to the client, carrying the definitive master device's LLM address and LLM configuration parameters in its extended option payload.
@@ -194,13 +194,11 @@ API_Price:
 
 If a DHCP client requires the LLM metadata, it MUST include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in RFC 2132.
 
-When a DHCP client receives OPTION_LLM_META, it MUST perform the following validation checks:
-* Verify that the `Option-Length` matches the required structure minimums and fields defined in this document.
-* If `Addr_Type` is 0x03 (FQDN), verify that the Address/Domain Name field is a properly encoded single FQDN and does not exceed 256 octets.
+When a DHCP client receives OPTION_LLM_META, it MUST verify that if `Addr_Type` is 0x03 (FQDN), then the option length is no more than 256 octets (the maximum length of a single fully qualified domain name (FQDN) allowed by the DNS), and that the LLM domain name is a properly encoded single FQDN, as specified in Section 8 of RFC 3315 ("Representation and Use of Domain Names") [RFC3315].
 
 # Security Considerations
 
-The communication between the DHCP client and the DHCP server for the exchange of LLM address and configuration parameters is security sensitive and requires serve rauthentication and integrity protection. DHCPv6 security as described in [RFC3315] can be used for this purpose. For DHCPv4 deployments, authentication mechanisms specified in [RFC3118] can be used for this purpose.
+The communication between the DHCP client and the DHCP server for the exchange of LLM address and configuration parameters is security sensitive and requires server authentication and integrity protection. DHCPv6 security as described in [RFC3315] can be used for this purpose. For DHCPv4 deployments, authentication mechanisms specified in [RFC3118] can be used for this purpose.
 
 # IANA Considerations
 
