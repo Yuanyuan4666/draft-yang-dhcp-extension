@@ -3,7 +3,7 @@ title: "DHCP New Option Extension based on LLM Capability"
 abbrev: "DHCP LLM Extension"
 category: info
 
-docname: draft-yang-dhcp-extension-latest
+docname: draft-yang-dhc-dhcp-extension-00
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date: 2026-06-30
