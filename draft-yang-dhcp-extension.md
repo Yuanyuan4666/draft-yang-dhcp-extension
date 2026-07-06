@@ -45,7 +45,7 @@ This document specifies a DHCP option extension designed for campus networks to 
 
 A campus network refers to a network established within a specific area, such as an enterprise, science park, school, or hospital. Network elements within a campus network are divided into master devices (such as a core switch or a gateway) and client devices (such as an access switch or an AP). Client devices must discover and register to a master device to complete networking, while the master device manages multiple registered client devices. 
 
-Centralized campus AIOPS (Artificial Intelligence for IT Operations) relies on cloud data centers. Local devices upload logs and alarms to the cloud for LLM analysis. This introduces two pitfalls:
+Centralized campus Artificial Intelligence for IT Operations (AIOps) relies on cloud data centers. Local devices upload logs and alarms to the cloud for LLM analysis. This introduces two pitfalls:
 1. **Data Privacy**: Regulations prohibit uploading internal network topology and business traffic data to public clouds.
 2. **High Latency**: Cloud interactions over WAN (Wide Area Network) introduce high latency, failing the real-time requirements for network self-healing.
 
