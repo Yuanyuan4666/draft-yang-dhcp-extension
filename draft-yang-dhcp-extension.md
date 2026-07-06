@@ -51,7 +51,7 @@ Centralized campus Artificial Intelligence for IT Operations (AIOps) relies on c
 
 To eliminate these bottlenecks, shifting LLM inference to the network edge is the current trend. Core switches and gateways are now equipped with NPU/GPU hardware. This distributed architecture keeps sensitive data within the campus and eliminates cloud latency, enabling real-time root-cause analysis and troubleshooting directly at the edge.
 
-Currently, the master device's LLM address is manually configured via CLI or hardcoded into client devices. Although standard DHCP automatically assigns basic parameters like IP addresses, subnets, and gateways, it cannot indicate whether a master device possesses LLM capabilities. This means that client devices cannot automatically identify which master devices are LLM-enabled. Consequently, they may register to a non-LLM-enabled device and cannot request or utilize the LLM capabilities of the master device for network configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.
+Currently, the master device's IP configuration attributes are manually configured via CLI or hardcoded into client devices. Although standard DHCP automatically assigns basic parameters like IP addresses, subnets, and gateways, it cannot indicate whether a master device possesses LLM capabilities. This means that client devices cannot automatically identify which master devices are LLM-enabled. Consequently, they may register to a non-LLM-enabled device and cannot request or utilize the LLM capabilities of the master device for network configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.
 
 To address this limitation, this document extends two distinct elements within the DHCP protocol payload, to help client devices distinguish and connect to a master device with LLM capabilities:
 1. **the master device's address**
@@ -61,15 +61,18 @@ To address this limitation, this document extends two distinct elements within t
 
 {::boilerplate bcp14-tagged}
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL"
+in this document are to be interpreted as described in BCP 14 {{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all capitals, as shown
+here.
 
 This document defines the following roles:
 
 **Master Device**:
-: The network element that hosts and executes the LLM to perform configuration and network troubleshooting inference, which operates as the DHCP Server. A master device could be a core switch or a gateway equipped with hardware neural processing units.
+: The network element that hosts and executes the LLM to process, analyze, and store network data at or near the physical location where the data is generated, which operates as the DHCP Server.
+A master device could be a core switch or a gateway equipped with hardware neural processing units.
 
 **Client Device**:
-: The network element that delegates heavy text and logic processing to the Master Device due to hardware cost and power limits, which operates as lightweight DHCP Client. Client Device could be an aggregation switch, access switch, or a Wi-Fi Access Point (distributive deployed).
+: The network element that collect the data with limited processing and power capability, which operates as lightweight DHCP Client. Client Device could be an aggregation switch, access switch, or a Wi-Fi Access Point (distributive deployed).
 
 # Typical Deployment Topology
 
@@ -113,14 +116,14 @@ Client Device                                                 DHCP Server
      |    (PRL includes New Option or Option 43)                   |
      |                                                             |
      |<-- 2. DHCP Offer -------------------------------------------|
-     |    (Carries the master device's address               |
-     |     & the master device's LLM configuration)         |
+     |    (Carries the master device's address                     |
+     |     & the master device's LLM configuration)                |
      |                                                             |
      |--- 3. DHCP Request ---------------------------------------->|
      |                                                             |
      |<-- 4. DHCP ACK ---------------------------------------------|
-     |    (Carries the master device's address               |
-     |     & the master device's LLM configuration)         |
+     |    (Carries the master device's address                     |
+     |     & the master device's LLM configuration)                |
      |                                                             |
      v                                                             v
 5. [Extract direct / Extract through while or for using pointer]
