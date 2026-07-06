@@ -174,7 +174,7 @@ LLM_Dest_Port:
 : 2 bytes. Indicates the port used to access the LLM service. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.
 
 Address / Domain Name:
-: Variable length. Contains the IPv4 address/IPv6 address/FQDN of the LLM service endpoint hosted on the master device. If Addr_Type is 0x01, it MUST be a 4-byte IPv4 address; If Addr_Type is 0x02, it MUST be a 16-byte IPv6 address; If Addr_Type is 0x03, it MUST be a DNS-encoded FQDN (as specified in RFC 3315).
+: Variable length. Contains the IPv4 address/IPv6 address/FQDN of the LLM service endpoint hosted on the master device. If Addr_Type is 0x01, it MUST be a 4-byte IPv4 address; If Addr_Type is 0x02, it MUST be a 16-byte IPv6 address; If Addr_Type is 0x03, it MUST be a DNS-encoded FQDN(as specified in [RFC1035]).
 
 **the master device's LLM configuration parameters:**
 
