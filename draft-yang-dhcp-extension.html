@@ -7,7 +7,7 @@
 <title>DHCP New Option Extension based on LLM Capability</title>
 <meta content="Yuanyuan Yang" name="author">
 <meta content="
-       This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with the LLM (Large Language Model). The mechanism extends two specific parameters within the DHCP payload: the master device address and the master device's LLM configuration. This allows client devices to identify and register to LLM-enabled master device during the bootstrap phase. 
+       This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with the LLM (Large Language Model). The mechanism extends a new DHCP option containing two specific parameters within the DHCP payload: the master device's LLM address and the master device's LLM configuration. This allows client devices to identify and register to LLM-enabled master device during the bootstrap phase. 
     " name="description">
 <meta content="xml2rfc 3.34.0" name="generator">
 <meta content="DHCP Extension" name="keyword">
@@ -1081,7 +1081,7 @@ svg {
 <h1 id="title">DHCP New Option Extension based on LLM Capability</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with the LLM (Large Language Model). The mechanism extends two specific parameters within the DHCP payload: the master device address and the master device's LLM configuration. This allows client devices to identify and register to LLM-enabled master device during the bootstrap phase.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with the LLM (Large Language Model). The mechanism extends a new DHCP option containing two specific parameters within the DHCP payload: the master device's LLM address and the master device's LLM configuration. This allows client devices to identify and register to LLM-enabled master device during the bootstrap phase.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1163,28 +1163,17 @@ svg {
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-message-formats" class="internal xref">Message Formats</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
-                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-new-dhcp-option-format-stan" class="internal xref">New DHCP Option Format (Standalone Option)</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
-                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-alternative-sub-option-form" class="internal xref">Alternative Sub-option Format (Extension via Option 43)</a></p>
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-new-dhcp-option-format-opti" class="internal xref">New DHCP Option Format (OPTION_LLM_META)</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2.2.1">
-                    <p id="section-toc.1-1.5.2.2.2.1.1"><a href="#section-5.2.1" class="auto internal xref">5.2.1</a>.  <a href="#name-field-attribute-interpretat" class="internal xref">Field Attribute Interpretations</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.1">
+                    <p id="section-toc.1-1.5.2.1.2.1.1"><a href="#section-5.1.1" class="auto internal xref">5.1.1</a>.  <a href="#name-field-attribute-interpretat" class="internal xref">Field Attribute Interpretations</a></p>
 </li>
                 </ul>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-deployment-architecture-com" class="internal xref">Deployment Architecture Comparison</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
-                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-pros-of-standalone-new-dhcp" class="internal xref">Pros of Standalone New DHCP Option</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-pros-of-new-extension-via-o" class="internal xref">Pros of New Extension via Option 43</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-client-behavior" class="internal xref">Client Behavior</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
@@ -1216,8 +1205,8 @@ svg {
 2. <strong>High Latency</strong>: Cloud interactions over WAN (Wide Area Network) introduce high latency, failing the real-time requirements for network self-healing.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">To eliminate these bottlenecks, shifting LLM inference to the network edge is the current trend. Core switches and gateways are now equipped with NPU/GPU hardware. This distributed architecture keeps sensitive data within the campus and eliminates cloud latency, enabling real-time root-cause analysis and troubleshooting directly at the edge.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">Currently, the master device's LLM address is manually configured via CLI or hardcoded into client devices. Although standard DHCP automatically assigns basic parameters like IP addresses, subnets, and gateways, it cannot indicate whether a master device possesses LLM capabilities. This means that client devices cannot automatically identify which master devices are LLM-enabled. Consequently, they may register to a non-LLM-enabled device and cannot request or utilize the LLM capabilities of the master device for network configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">To address this limitation, this document extends two distinct elements within the DHCP protocol payload, to help client devices distinguish and connect to a master device with LLM capabilities:
-1. <strong>the master device's address</strong>
+<p id="section-1-5">To address this limitation, this document extends two distinct elements within the DHCP protocol payload through a new DHCP option, to help client devices distinguish and connect to a master device with LLM capabilities:
+1. <strong>the master device's LLM address</strong>
 2. <strong>the master device's LLM configuration</strong><a href="#section-1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1286,26 +1275,26 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-protocol-flow">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-protocol-flow" class="section-name selfRef">Protocol Flow</a>
       </h2>
-<p id="section-4-1">Two implementation methods can carry the required parameters within the protocol payload: a standalone new DHCP Option or a sub-option extension within the existing Vendor-Specific Information Option (Option 43). Both methods follow the identical standard DHCP sequence below, differing only in the specific Option code requested and returned:<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1">The discovery mechanism utilizes a new DHCP Option to carry the required parameters within the protocol payload. The process follows the standard DHCP sequence below:<a href="#section-4-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4-2">
 <pre>
 Client Device                                                 DHCP Server
      |                                                             |
      |--- 1. DHCP Discover ---------------------------------------&gt;|
-     |    (PRL includes New Option or Option 43)                   |
+     |    (PRL includes New Option_LLM_META)                   |
      |                                                             |
      |&lt;-- 2. DHCP Offer -------------------------------------------|
-     |    (Carries the master device's address               |
+     |    (Carries the master device's LLM address               |
      |     &amp; the master device's LLM configuration)         |
      |                                                             |
      |--- 3. DHCP Request ----------------------------------------&gt;|
      |                                                             |
      |&lt;-- 4. DHCP ACK ---------------------------------------------|
-     |    (Carries the master device's address               |
+     |    (Carries the master device's LLM address               |
      |     &amp; the master device's LLM configuration)         |
      |                                                             |
      v                                                             v
-5. [Extract direct / Extract through while or for using pointer]
+5. [Extract direct using fixed field offset]
      |
      +--&gt; LLM_Cap = 0x01 (Model Active)
      +--&gt; LLM_Scale = 0x0048 (72B Model)
@@ -1320,19 +1309,19 @@ Client Device                                                 DHCP Server
         </h3>
 <ol start="1" type="1" class="normal type-1" id="section-4.1-1">
 <li id="section-4.1-1.1">
-            <p id="section-4.1-1.1.1"><strong>DHCP Discover</strong>: The client device broadcasts a DHCP Discover message. The Parameter Request List (PRL) includes either the newly allocated standalone Option code or Option 43, signaling its intent to perceive upstream capability profiles.<a href="#section-4.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-1.1.1"><strong>DHCP Discover</strong>: The client device broadcasts a DHCP Discover message. The Parameter Request List (PRL) includes either the newly allocated Option code (OPTION_LLM_META), signaling its intent to perceive upstream capability profiles.<a href="#section-4.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-4.1-1.2">
-            <p id="section-4.1-1.2.1"><strong>DHCP Offer</strong>: The DHCP Server (hosted on the Master Device) replies with a DHCP Offer encapsulating the initial master device address and LLM configuration parameters in its extended option payload.<a href="#section-4.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-1.2.1"><strong>DHCP Offer</strong>: The DHCP Server (hosted on the Master Device) replies with a DHCP Offer encapsulating the initial master device's LLM address and LLM configuration parameters in its extended option payload.<a href="#section-4.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-4.1-1.3">
             <p id="section-4.1-1.3.1"><strong>DHCP Request</strong>: The client device selects the offer and transmits a DHCP Request to the DHCP server.<a href="#section-4.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-4.1-1.4">
-            <p id="section-4.1-1.4.1"><strong>DHCP ACK</strong>: The DHCP Server commits the allocation and sends a DHCP ACK message to the client, carrying the definitive master device address and LLM configuration parameters in its extended option payload.<a href="#section-4.1-1.4.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-1.4.1"><strong>DHCP ACK</strong>: The DHCP Server commits the allocation and sends a DHCP ACK message to the client, carrying the definitive master device's LLM address and LLM configuration parameters in its extended option payload.<a href="#section-4.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-4.1-1.5">
-            <p id="section-4.1-1.5.1"><strong>Extraction</strong>:Upon receiving the final DHCPACK response, the client device extracts the master device's address parameters and the master device's LLM configuration parameters.<a href="#section-4.1-1.5.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-1.5.1"><strong>Extraction</strong>:Upon receiving the final DHCPACK response, the client device extracts the master device's LLM address parameters and the master device's LLM configuration parameters directly using fixed offsets.<a href="#section-4.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
 </section>
@@ -1344,11 +1333,11 @@ Client Device                                                 DHCP Server
       <h2 id="name-message-formats">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-message-formats" class="section-name selfRef">Message Formats</a>
       </h2>
-<p id="section-5-1">DHCP extensions convey the master device's address and the master device's LLM configuration. The two implementation methods only differ in their message formats as follows:<a href="#section-5-1" class="pilcrow">¶</a></p>
-<div id="new-dhcp-option-format-standalone-option">
+<p id="section-5-1">DHCP extensions convey the master device's LLM address and the master device's LLM configuration. The format of the new DHCP option (OPTION_LLM_META) is defined as follows:<a href="#section-5-1" class="pilcrow">¶</a></p>
+<div id="new-dhcp-option-format-optionllmmeta">
 <section id="section-5.1">
-        <h3 id="name-new-dhcp-option-format-stan">
-<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-new-dhcp-option-format-stan" class="section-name selfRef">New DHCP Option Format (Standalone Option)</a>
+        <h3 id="name-new-dhcp-option-format-opti">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-new-dhcp-option-format-opti" class="section-name selfRef">New DHCP Option Format (OPTION_LLM_META)</a>
         </h3>
 <div class="alignLeft art-text artwork" id="section-5.1-1">
 <pre>
@@ -1369,72 +1358,49 @@ Client Device                                                 DHCP Server
 +---------------------------------------------------------------+
 </pre><a href="#section-5.1-1" class="pilcrow">¶</a>
 </div>
-</section>
-</div>
-<div id="alternative-sub-option-format-extension-via-option-43">
-<section id="section-5.2">
-        <h3 id="name-alternative-sub-option-form">
-<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-alternative-sub-option-form" class="section-name selfRef">Alternative Sub-option Format (Extension via Option 43)</a>
-        </h3>
-<div class="alignLeft art-text artwork" id="section-5.2-1">
-<pre>
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-------------------------------+-------------------------------+
-| Type = 43 (Vendor-Specific)   | Main Option-Length            |
-+-------------------------------+-------------------------------+
-| SubType=0x01  | SubLen=0x01   | LLM_Cap(0x01) | SubType=0x02  | &lt;-- Sub-TLV 1
-+-------------------------------+-------------------------------+
-| SubLen=0x02   |          LLM_Scale (2 Bytes)  | SubType=0x03  | &lt;-- Sub-TLV 2
-+-------------------------------+-------------------------------+
-| SubLen=0x01   | LLM_Role      | SubType=0x04  | SubLen=0x04   | &lt;-- Sub-TLV 3
-+-------------------------------+-------------------------------+
-|                    API_Price (4 bytes)                        | &lt;-- Sub-TLV 4
-+-------------------------------+-------------------------------+
-| SubType=0x05  | SubLen=0x02   |     LLM_Dest_Port             | &lt;-- Sub-TLV 5
-+-------------------------------+-------------------------------+
-| SubType=0x06  | SubLen=Var    | Address/Domain (Variable...)  | &lt;-- Sub-TLV 6
-+-------------------------------+-------------------------------+
-</pre><a href="#section-5.2-1" class="pilcrow">¶</a>
-</div>
 <div id="field-attribute-interpretations">
-<section id="section-5.2.1">
+<section id="section-5.1.1">
           <h4 id="name-field-attribute-interpretat">
-<a href="#section-5.2.1" class="section-number selfRef">5.2.1. </a><a href="#name-field-attribute-interpretat" class="section-name selfRef">Field Attribute Interpretations</a>
+<a href="#section-5.1.1" class="section-number selfRef">5.1.1. </a><a href="#name-field-attribute-interpretat" class="section-name selfRef">Field Attribute Interpretations</a>
           </h4>
-<p id="section-5.2.1-1"><strong>the master device's address parameters:</strong><a href="#section-5.2.1-1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-5.2.1-2">
-            <dt id="section-5.2.1-2.1">Addr_Type:</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.1-2.2">
-              <p id="section-5.2.1-2.2.1">1 byte. 0x01 indicates IPv4 (4 bytes); 0x02 indicates IPv6 (16 bytes); 0x03 indicates FQDN.<a href="#section-5.2.1-2.2.1" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-1"><strong>the master device's LLM address parameters:</strong><a href="#section-5.1.1-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-5.1.1-2">
+            <dt id="section-5.1.1-2.1">Addr_Type:</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-2.2">
+              <p id="section-5.1.1-2.2.1">1 byte. Indicates the format of the following Address/Domain Name. 0x01 indicates IPv4 (4 bytes); 0x02 indicates IPv6 (16 bytes); 0x03 indicates fully qualified domain name (FQDN).<a href="#section-5.1.1-2.2.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.1-2.3">LLM_Dest_Port:</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.1-2.4">
-              <p id="section-5.2.1-2.4.1">2 bytes. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.<a href="#section-5.2.1-2.4.1" class="pilcrow">¶</a></p>
+<dt id="section-5.1.1-2.3">LLM_Dest_Port:</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-2.4">
+              <p id="section-5.1.1-2.4.1">2 bytes. Indicates the port used to access the LLM service. 0x0000 defaults to port 443 (HTTPS); otherwise specifies the active port.<a href="#section-5.1.1-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-5.1.1-2.5">Address / Domain Name:</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-2.6">
+              <p id="section-5.1.1-2.6.1">Variable length. Contains the IPv4 address/IPv6 address/FQDN of the LLM service endpoint hosted on the master device. If Addr_Type is 0x01, it <span class="bcp14">MUST</span> be a 4-byte IPv4 address; If Addr_Type is 0x02, it <span class="bcp14">MUST</span> be a 16-byte IPv6 address; If Addr_Type is 0x03, it <span class="bcp14">MUST</span> be a DNS-encoded FQDN (as specified in RFC 3315).<a href="#section-5.1.1-2.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
-<p id="section-5.2.1-3"><strong>the master device's LLM configuration parameters:</strong><a href="#section-5.2.1-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-5.2.1-4">
-            <dt id="section-5.2.1-4.1">LLM_Cap:</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.1-4.2">
-              <p id="section-5.2.1-4.2.1">1 byte. 0x01 indicates Active; 0x00 indicates Baseline.<a href="#section-5.2.1-4.2.1" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-3"><strong>the master device's LLM configuration parameters:</strong><a href="#section-5.1.1-3" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-5.1.1-4">
+            <dt id="section-5.1.1-4.1">LLM_Cap:</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-4.2">
+              <p id="section-5.1.1-4.2.1">1 byte. 0x01 indicates Active; 0x00 indicates Baseline.<a href="#section-5.1.1-4.2.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.1-4.3">LLM_Scale:</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.1-4.4">
-              <p id="section-5.2.1-4.4.1">2 bytes. Unsigned integer representing the model scale size in units of Billions (B).<a href="#section-5.2.1-4.4.1" class="pilcrow">¶</a></p>
+<dt id="section-5.1.1-4.3">LLM_Scale:</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-4.4">
+              <p id="section-5.1.1-4.4.1">2 bytes. Unsigned integer representing the model scale size in units of Billions (B).<a href="#section-5.1.1-4.4.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.1-4.5">LLM_Role:</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.1-4.6">
-              <p id="section-5.2.1-4.6.1">1 byte. 0x01 indicates Primary Master; 0x02 indicates Backup Master.<a href="#section-5.2.1-4.6.1" class="pilcrow">¶</a></p>
+<dt id="section-5.1.1-4.5">LLM_Role:</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-4.6">
+              <p id="section-5.1.1-4.6.1">1 byte. 0x01 indicates Primary Master; 0x02 indicates Backup Master.<a href="#section-5.1.1-4.6.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.1-4.7">API_Price:</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.1-4.8">
-              <p id="section-5.2.1-4.8.1">4 bytes. 0x0000000A represents the monetary cost per million tokens.<a href="#section-5.2.1-4.8.1" class="pilcrow">¶</a></p>
+<dt id="section-5.1.1-4.7">API_Price:</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-4.8">
+              <p id="section-5.1.1-4.8.1">4 bytes. 0x0000000A represents the monetary cost per million tokens.<a href="#section-5.1.1-4.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -1444,47 +1410,15 @@ Client Device                                                 DHCP Server
 </div>
 </section>
 </div>
-<div id="deployment-architecture-comparison">
+<div id="client-behavior">
 <section id="section-6">
-      <h2 id="name-deployment-architecture-com">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-deployment-architecture-com" class="section-name selfRef">Deployment Architecture Comparison</a>
+      <h2 id="name-client-behavior">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-client-behavior" class="section-name selfRef">Client Behavior</a>
       </h2>
-<div id="pros-of-standalone-new-dhcp-option">
-<section id="section-6.1">
-        <h3 id="name-pros-of-standalone-new-dhcp">
-<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-pros-of-standalone-new-dhcp" class="section-name selfRef">Pros of Standalone New DHCP Option</a>
-        </h3>
-<ul class="normal">
-<li class="normal" id="section-6.1-1.1">
-            <p id="section-6.1-1.1.1">Cleaner design without nesting attributes inside complex structures.<a href="#section-6.1-1.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-6.1-1.2">
-            <p id="section-6.1-1.2.1">Fixed field offsets allow network chipsets to parse LLM metadata directly, eliminating pointer iterations that introduce latency and hardware memory consumption.<a href="#section-6.1-1.2.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-6.1-1.3">
-            <p id="section-6.1-1.3.1">No requirement to allocate 2 bytes for single attribute containers (subtype + sublen) across every field, resulting in lower overall packet size overhead.<a href="#section-6.1-1.3.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-</section>
-</div>
-<div id="pros-of-new-extension-via-option-43">
-<section id="section-6.2">
-        <h3 id="name-pros-of-new-extension-via-o">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-pros-of-new-extension-via-o" class="section-name selfRef">Pros of New Extension via Option 43</a>
-        </h3>
-<ul class="normal">
-<li class="normal" id="section-6.2-1.1">
-            <p id="section-6.2-1.1.1">Does not require a scarce global Option assignment from IANA.<a href="#section-6.2-1.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-6.2-1.2">
-            <p id="section-6.2-1.2.1">Legacy devices (e.g., intermediate DHCP relays) can natively recognize and forward Option 43 by treating it as an existing vendor container.<a href="#section-6.2-1.2.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-6.2-1.3">
-            <p id="section-6.2-1.3.1">Provides highly extensible fields; easy to add, remove, or modify new LLM attributes without breaking the main protocol container structure.<a href="#section-6.2-1.3.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-</section>
-</div>
+<p id="section-6-1">If a DHCP client requires the LLM metadata, it <span class="bcp14">MUST</span> include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in RFC 2132.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">When a DHCP client receives OPTION_LLM_META, it <span class="bcp14">MUST</span> perform the following validation checks:
+* Verify that the <code>Option-Length</code> matches the required structure minimums and fields defined in this document.
+* If <code>Addr_Type</code> is 0x03 (FQDN), verify that the Address/Domain Name field is a properly encoded single FQDN and does not exceed 256 octets.<a href="#section-6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
@@ -1492,7 +1426,7 @@ Client Device                                                 DHCP Server
       <h2 id="name-security-considerations">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-7-1">TBD<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-1">The communication between the DHCP client and the DHCP server for the exchange of LLM address and configuration parameters is security sensitive and requires serve rauthentication and integrity protection. DHCPv6 security as described in RFC3315 can be used for this purpose. For DHCPv4 deployments, authentication mechanisms specified in RFC 3118 can be used for this purpose.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -1500,7 +1434,7 @@ Client Device                                                 DHCP Server
       <h2 id="name-iana-considerations">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-8-1">This document requests IANA to allocate a new DHCP Option code from the standardized range (224 to 254) for the standalone option format, or alternatively register the sub-option definitions within the Option 43 internal sub-option registry space.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-1">IANA is requested to assign a new DHCP Option code for OPTION_LLM_META from the "BOOTP Vendor Extensions and DHCP Options" registry maintained at http://www.iana.org/.<a href="#section-8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-normative-references">
