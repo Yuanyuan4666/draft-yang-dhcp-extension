@@ -192,19 +192,17 @@ API_Price:
 
 # Client Behavior
 
-If a DHCP client requires the LLM metadata, it MUST include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in RFC 2132.
-
-When a DHCP client receives OPTION_LLM_META, it MUST verify that if `Addr_Type` is 0x03 (FQDN), then the option length is no more than 256 octets (the maximum length of a single FQDN allowed by the DNS), and that the LLM domain name is a properly encoded single FQDN, as specified in Section 8 of RFC 3315 ("Representation and Use of Domain Names") [RFC3315].
+If a DHCP client requires the LLM metadata, it MUST include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in [RFC2132]. When a DHCP client receives OPTION_LLM_META, it MUST perform the following validation checks:
+* Verify that the `Option-Length` matches the required structure minimums defined in this document.
+* If `Addr_Type` is 0x03 (FQDN), verify that the Address / Domain Name field does not exceed 255 octets and represents a properly formatted domain name as specified in [RFC1035].
 
 # Security Considerations
 
-The communication between the DHCP client and the DHCP server for the exchange of LLM address and configuration parameters is security sensitive and requires server authentication and integrity protection. DHCPv6 security as described in [RFC3315] can be used for this purpose. For DHCPv4 deployments, authentication mechanisms specified in [RFC3118] can be used for this purpose.
+The communication between the DHCP client and the DHCP server for exchanging LLM address and configuration parameters is security sensitive and requires server authentication and integrity protection. DHCPv4 authentication mechanisms specified in [RFC3118] can be used for this purpose.
 
 # IANA Considerations
 
 IANA is requested to assign a new DHCP Option code for OPTION_LLM_META from the "BOOTP Vendor Extensions and DHCP Options" registry maintained at http://www.iana.org/.
-
---- back
 
 # Acknowledgments
 {:numbered="false"}
