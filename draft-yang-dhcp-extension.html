@@ -1182,13 +1182,13 @@ svg {
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref"></a><a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
 </li>
         </ul>
 </nav>
@@ -1415,8 +1415,9 @@ Client Device                                                 DHCP Server
       <h2 id="name-client-behavior">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-client-behavior" class="section-name selfRef">Client Behavior</a>
       </h2>
-<p id="section-6-1">If a DHCP client requires the LLM metadata, it <span class="bcp14">MUST</span> include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in RFC 2132.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">When a DHCP client receives OPTION_LLM_META, it <span class="bcp14">MUST</span> verify that if <code>Addr_Type</code> is 0x03 (FQDN), then the option length is no more than 256 octets (the maximum length of a single FQDN allowed by the DNS), and that the LLM domain name is a properly encoded single FQDN, as specified in Section 8 of RFC 3315 ("Representation and Use of Domain Names") [RFC3315].<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-1">If a DHCP client requires the LLM metadata, it <span class="bcp14">MUST</span> include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in [RFC2132]. When a DHCP client receives OPTION_LLM_META, it <span class="bcp14">MUST</span> perform the following validation checks:
+* Verify that the <code>Option-Length</code> matches the required structure minimums defined in this document.
+* If <code>Addr_Type</code> is 0x03 (FQDN), verify that the Address / Domain Name field does not exceed 255 octets and represents a properly formatted domain name as specified in [RFC1035].<a href="#section-6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
@@ -1424,7 +1425,7 @@ Client Device                                                 DHCP Server
       <h2 id="name-security-considerations">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-7-1">The communication between the DHCP client and the DHCP server for the exchange of LLM address and configuration parameters is security sensitive and requires server authentication and integrity protection. DHCPv6 security as described in [RFC3315] can be used for this purpose. For DHCPv4 deployments, authentication mechanisms specified in [RFC3118] can be used for this purpose.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-1">The communication between the DHCP client and the DHCP server for exchanging LLM address and configuration parameters is security sensitive and requires server authentication and integrity protection. DHCPv4 authentication mechanisms specified in [RFC3118] can be used for this purpose.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -1435,10 +1436,18 @@ Client Device                                                 DHCP Server
 <p id="section-8-1">IANA is requested to assign a new DHCP Option code for OPTION_LLM_META from the "BOOTP Vendor Extensions and DHCP Options" registry maintained at http://www.iana.org/.<a href="#section-8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="sec-normative-references">
+<div id="acknowledgments">
 <section id="section-9">
+      <h2 id="name-acknowledgments">
+<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="section-9-1">TODO acknowledge.<a href="#section-9-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-normative-references">
+<section id="section-10">
       <h2 id="name-normative-references">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#name-normative-references" class="section-name selfRef">Normative References</a>
       </h2>
 <dl class="references">
 <dt id="RFC2119">[RFC2119]</dt>
@@ -1452,16 +1461,8 @@ Client Device                                                 DHCP Server
 </dl>
 </section>
 </div>
-<div id="acknowledgments">
-<section id="appendix-A">
-      <h2 id="name-acknowledgments">
-<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
-      </h2>
-<p id="appendix-A-1">TODO acknowledge.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="authors-addresses">
-<section id="appendix-B">
+<section id="appendix-A">
       <h2 id="name-authors-address">
 <a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
       </h2>
