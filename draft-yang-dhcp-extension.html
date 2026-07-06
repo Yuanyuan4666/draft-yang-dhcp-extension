@@ -1416,7 +1416,7 @@ Client Device                                                 DHCP Server
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-client-behavior" class="section-name selfRef">Client Behavior</a>
       </h2>
 <p id="section-6-1">If a DHCP client requires the LLM metadata, it <span class="bcp14">MUST</span> include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in RFC 2132.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">When a DHCP client receives OPTION_LLM_META, it <span class="bcp14">MUST</span> verify that if <code>Addr_Type</code> is 0x03 (FQDN), then the option length is no more than 256 octets (the maximum length of a single fully qualified domain name (FQDN) allowed by the DNS), and that the LLM domain name is a properly encoded single FQDN, as specified in Section 8 of RFC 3315 ("Representation and Use of Domain Names") [RFC3315].<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-2">When a DHCP client receives OPTION_LLM_META, it <span class="bcp14">MUST</span> verify that if <code>Addr_Type</code> is 0x03 (FQDN), then the option length is no more than 256 octets (the maximum length of a single FQDN allowed by the DNS), and that the LLM domain name is a properly encoded single FQDN, as specified in Section 8 of RFC 3315 ("Representation and Use of Domain Names") [RFC3315].<a href="#section-6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
