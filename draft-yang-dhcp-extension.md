@@ -110,17 +110,17 @@ The discovery mechanism utilizes a new DHCP Option to carry the required paramet
 Client Device                                                 DHCP Server
      |                                                             |
      |--- 1. DHCP Discover --------------------------------------->|
-     |    (PRL includes New Option_LLM_META)                   |
+     |    (PRL includes New Option_LLM_META)                       |
      |                                                             |
      |<-- 2. DHCP Offer -------------------------------------------|
-     |    (Carries the master device's LLM address               |
-     |     & the master device's LLM configuration)         |
+     |    (Carries the master device's LLM address                 |
+     |     & the master device's LLM configuration)                |
      |                                                             |
      |--- 3. DHCP Request ---------------------------------------->|
      |                                                             |
      |<-- 4. DHCP ACK ---------------------------------------------|
-     |    (Carries the master device's LLM address               |
-     |     & the master device's LLM configuration)         |
+     |    (Carries the master device's LLM address                 |
+     |     & the master device's LLM configuration)                |
      |                                                             |
      v                                                             v
 5. [Extract direct using fixed field offset]
