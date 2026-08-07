@@ -6,8 +6,9 @@
 <meta content="initial-scale=1.0" name="viewport">
 <title>DHCP New Option Extension based on LLM Capability</title>
 <meta content="Yuanyuan Yang" name="author">
+<meta content="Qin Wu" name="author">
 <meta content="
-       This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with the LLM (Large Language Model). The mechanism extends a new DHCP option containing two specific parameters within the DHCP payload: the master device's LLM address and the master device's LLM configuration. This allows client devices to identify and register to LLM-enabled master device during the bootstrap phase. 
+       This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with the LLM (Large Language Model). The mechanism extends a new DHCP option containing two specific parameters within the DHCP payload: the master device's LLM address and the master device's LLM configuration. This allows client devices to identify and register to an LLM-enabled master device during the bootstrap phase. 
     " name="description">
 <meta content="xml2rfc 3.34.0" name="generator">
 <meta content="DHCP Extension" name="keyword">
@@ -23,7 +24,7 @@
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.10.0
+    platformdirs 4.11.0
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
@@ -63,7 +64,6 @@
   src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: italic;
@@ -112,7 +112,6 @@
   src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: normal;
@@ -177,7 +176,6 @@
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
 }
 
 @font-face {
@@ -1046,11 +1044,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">DHCP LLM Extension</td>
-<td class="right">June 2026</td>
+<td class="right">July 2026</td>
 </tr></thead>
 <tfoot><tr>
-<td class="left">Yang</td>
-<td class="center">Expires 1 January 2027</td>
+<td class="left">Yang &amp; Wu</td>
+<td class="center">Expires 7 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1063,16 +1061,20 @@ svg {
 <dd class="internet-draft">draft-yang-dhc-dhcp-extension-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-30" class="published">30 June 2026</time>
+<time datetime="2026-07-06" class="published">6 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-01-01">1 January 2027</time></dd>
-<dt class="label-authors">Author:</dt>
+<dd class="expires"><time datetime="2027-01-07">7 January 2027</time></dd>
+<dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
       <div class="author-name">Y. Yang</div>
+<div class="org">Huawei</div>
+</div>
+<div class="author">
+      <div class="author-name">Q. Wu</div>
 <div class="org">Huawei</div>
 </div>
 </dd>
@@ -1081,7 +1083,7 @@ svg {
 <h1 id="title">DHCP New Option Extension based on LLM Capability</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with the LLM (Large Language Model). The mechanism extends a new DHCP option containing two specific parameters within the DHCP payload: the master device's LLM address and the master device's LLM configuration. This allows client devices to identify and register to LLM-enabled master device during the bootstrap phase.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document specifies a DHCP option extension designed for campus networks to help client devices distinguish and connect to a master device with the LLM (Large Language Model). The mechanism extends a new DHCP option containing two specific parameters within the DHCP payload: the master device's LLM address and the master device's LLM configuration. This allows client devices to identify and register to an LLM-enabled master device during the bootstrap phase.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1113,7 +1115,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1177,13 +1179,13 @@ svg {
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref"></a><a href="#name-normative-references" class="internal xref">Normative References</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-contributors" class="internal xref">Contributors</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1195,14 +1197,26 @@ svg {
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
 <p id="section-1-1">A campus network refers to a network established within a specific area, such as an enterprise, science park, school, or hospital. Network elements within a campus network are divided into master devices (such as a core switch or a gateway) and client devices (such as an access switch or an AP). Client devices must discover and register to a master device to complete networking, while the master device manages multiple registered client devices.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Centralized campus Artificial Intelligence for IT Operations (AIOps) relies on cloud data centers. Local devices upload logs and alarms to the cloud for LLM analysis. This introduces two pitfalls:
-1. <strong>Data Privacy</strong>: Regulations prohibit uploading internal network topology and business traffic data to public clouds.
-2. <strong>High Latency</strong>: Cloud interactions over WAN (Wide Area Network) introduce high latency, failing the real-time requirements for network self-healing.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">To eliminate these bottlenecks, shifting LLM inference to the network edge is the current trend. Core switches and gateways are now equipped with NPU/GPU hardware. This distributed architecture keeps sensitive data within the campus and eliminates cloud latency, enabling real-time root-cause analysis and troubleshooting directly at the edge.<a href="#section-1-3" class="pilcrow">¶</a></p>
-<p id="section-1-4">Currently, the master device's IP configuration attributes are manually configured via CLI or hardcoded into client devices. Although standard DHCP automatically assigns basic parameters like IP addresses, subnets, and gateways, it cannot indicate whether a master device possesses LLM capabilities. This means that client devices cannot automatically identify which master devices are LLM-enabled. Consequently, they may register to a non-LLM-enabled device and cannot request or utilize the LLM capabilities of the master device for network configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">To address this limitation, this document extends two distinct elements within the DHCP protocol payload through a new DHCP option, to help client devices distinguish and connect to a master device with LLM capabilities:
-1. <strong>the master device's LLM address</strong>
-2. <strong>the master device's LLM configuration</strong><a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-2">Centralized campus Artificial Intelligence for IT Operations (AIOps) relies on cloud data centers. Local devices upload logs and alarms to the cloud for LLM analysis. This introduces two pitfalls:<a href="#section-1-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-1-3">
+<li id="section-1-3.1">
+          <p id="section-1-3.1.1"><strong>Data Privacy</strong>: Regulations prohibit uploading internal network topology and business traffic data to public clouds.<a href="#section-1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-1-3.2">
+          <p id="section-1-3.2.1"><strong>High Latency</strong>: Cloud interactions over WAN (Wide Area Network) introduce high latency, failing the real-time requirements for network self-healing.<a href="#section-1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ol>
+<p id="section-1-4">To eliminate these bottlenecks, shifting LLM inference to the network edge is the current trend. Core switches and gateways are now equipped with NPU/GPU hardware. This distributed architecture keeps sensitive data within the campus and eliminates cloud latency, enabling real-time root-cause analysis and troubleshooting directly at the edge.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">Currently, the master device's IP configuration attributes are manually configured via CLI or hardcoded into client devices. Although standard DHCP automatically assigns basic parameters like IP addresses, subnets, and gateways, it cannot indicate whether a master device possesses LLM capabilities. This means that client devices cannot automatically identify which master devices are LLM-enabled. Consequently, they may register to a non-LLM-enabled device and cannot request or utilize the LLM capabilities of the master device for network configuration or troubleshooting, which also leads to a waste of the master device's LLM resources.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">To address this limitation, this document extends two distinct elements within the DHCP protocol payload through a new DHCP option, to help client devices distinguish and connect to a master device with LLM capabilities:<a href="#section-1-6" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-1-7">
+<li id="section-1-7.1">
+          <p id="section-1-7.1.1"><strong>the master device's LLM address</strong><a href="#section-1-7.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-1-7.2">
+          <p id="section-1-7.2.1"><strong>the master device's LLM configuration</strong><a href="#section-1-7.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ol>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -1214,22 +1228,18 @@ svg {
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
 appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>", "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>"
-in this document are to be interpreted as described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they appear in all capitals, as shown
-here.<a href="#section-2-2" class="pilcrow">¶</a></p>
-<p id="section-2-3">This document defines the following roles:<a href="#section-2-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-2-4">
-        <dt id="section-2-4.1">
+<p id="section-2-2">This document defines the following roles:<a href="#section-2-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-2-3">
+        <dt id="section-2-3.1">
 <strong>Master Device</strong>:</dt>
-        <dd style="margin-left: 1.5em" id="section-2-4.2">
-          <p id="section-2-4.2.1">The network element that hosts and executes the LLM to process, analyze, and store network data at or near the physical location where the data is generated, which operates as the DHCP Server.
-A master device could be a core switch or a gateway equipped with hardware neural processing units.<a href="#section-2-4.2.1" class="pilcrow">¶</a></p>
+        <dd style="margin-left: 1.5em" id="section-2-3.2">
+          <p id="section-2-3.2.1">The network element that hosts and executes the LLM to process, analyze, and store network data at or near the physical location where the data is generated, which operates as the DHCP Server. A master device could be a core switch or a gateway equipped with hardware neural processing units.<a href="#section-2-3.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
-<dt id="section-2-4.3">
+<dt id="section-2-3.3">
 <strong>Client Device</strong>:</dt>
-        <dd style="margin-left: 1.5em" id="section-2-4.4">
-          <p id="section-2-4.4.1">The network element that collect the data with limited processing and power capability, which operates as lightweight DHCP Client. Client Device could be an aggregation switch, access switch, or a Wi-Fi Access Point (distributive deployed).<a href="#section-2-4.4.1" class="pilcrow">¶</a></p>
+        <dd style="margin-left: 1.5em" id="section-2-3.4">
+          <p id="section-2-3.4.1">The network element that collects the data with limited processing and power capability, which operates as a lightweight DHCP Client. A Client Device could be an aggregation switch, access switch, or a Wi-Fi Access Point (distributively deployed).<a href="#section-2-3.4.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>
@@ -1241,8 +1251,7 @@ A master device could be a core switch or a gateway equipped with hardware neura
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-typical-deployment-topology" class="section-name selfRef">Typical Deployment Topology</a>
       </h2>
 <p id="section-3-1">The diagram below illustrates a typical smart campus network topology.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3-2">
-<pre>
+<p id="section-3-2"><code>
                      +---------------------------------------+
                      |   Upstream Master Device (Core/GW)    |
                      |   [Centralized NPU or NPU / Model]    |
@@ -1261,11 +1270,22 @@ A master device could be a core switch or a gateway equipped with hardware neura
 |   Access Switch  |  |     Wi-Fi7 AP    |             |   Access Switch  |  |     Wi-Fi7 AP    |
 | [DHCP Client]    |  | [DHCP Client]    |             | [DHCP Client]    |  | [DHCP Client]    |
 +------------------+  +------------------+             +------------------+  +------------------+
-</pre><a href="#section-3-2" class="pilcrow">¶</a>
-</div>
-<p id="section-3-3"><strong>Master Device</strong>: The Upstream Master Device (Core/GW) at the root of the network acts as the centralized intelligence center, utilizing hardware acceleration to run the LLM.<a href="#section-3-3" class="pilcrow">¶</a></p>
-<p id="section-3-4"><strong>Client Device</strong>: The downstream elements, including the Access Switches and Wi-Fi7 APs at the network edge.<a href="#section-3-4" class="pilcrow">¶</a></p>
-<p id="section-3-5">Note: The intermediate Aggregation Switches serve as transparent layer-2 or layer-3 transport elements only for transporting traffic.<a href="#section-3-5" class="pilcrow">¶</a></p>
+</code><a href="#section-3-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-3-3">
+        <dt id="section-3-3.1">
+<strong>Master Device</strong>:</dt>
+        <dd style="margin-left: 1.5em" id="section-3-3.2">
+          <p id="section-3-3.2.1">The Upstream Master Device (Core/GW) at the root of the network acts as the centralized intelligence center, utilizing hardware acceleration to run the LLM.<a href="#section-3-3.2.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-3-3.3">
+<strong>Client Device</strong>:</dt>
+        <dd style="margin-left: 1.5em" id="section-3-3.4">
+          <p id="section-3-3.4.1">The downstream elements, including the Access Switches and Wi-Fi7 APs at the network edge.<a href="#section-3-3.4.1" class="pilcrow">¶</a></p>
+</dd>
+      <dd class="break"></dd>
+</dl>
+<p id="section-3-4">Note: The intermediate Aggregation Switches serve as transparent layer-2 or layer-3 transport elements only for transporting traffic.<a href="#section-3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="message-formats">
@@ -1279,25 +1299,23 @@ A master device could be a core switch or a gateway equipped with hardware neura
         <h3 id="name-new-dhcp-option-format-opti">
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-new-dhcp-option-format-opti" class="section-name selfRef">New DHCP Option Format (OPTION_LLM_META)</a>
         </h3>
-<div class="alignLeft art-text artwork" id="section-4.1-1">
-<pre>
+<p id="section-4.1-1"><code>
 0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +---------------+---------------+-------------------------------+
-|        OPTION_LLM_META        |       Option-Length           |
+|        OPTION_LLM_META        |         Option-Length         |
 +---------------+---------------+---------------+---------------+
 |    LLM_Cap    |        LLM_Scale              |  LLM_Role     |
 +---------------+-------------------------------+---------------+
-|                      API_Price                                |
+|                       API_Price                               |
 +-------------------------------+--------------+----------------+
-|            Dest_Port          |   Addr_Type  |                |
+|            Dest_Port          |  Addr_Type   |                |
 +-------------------------------+--------------+                |
 |                                                               |
 |           Address / Domain Name (Variable Length...)          |
 |                                                               |
 +---------------------------------------------------------------+
-</pre><a href="#section-4.1-1" class="pilcrow">¶</a>
-</div>
+</code><a href="#section-4.1-1" class="pilcrow">¶</a></p>
 <div id="field-attribute-interpretations">
 <section id="section-4.1.1">
           <h4 id="name-field-attribute-interpretat">
@@ -1317,7 +1335,7 @@ A master device could be a core switch or a gateway equipped with hardware neura
             <dd class="break"></dd>
 <dt id="section-4.1.1-2.5">Address / Domain Name:</dt>
             <dd style="margin-left: 1.5em" id="section-4.1.1-2.6">
-              <p id="section-4.1.1-2.6.1">Variable length. Contains the IPv4 address/IPv6 address/FQDN of the master device. If Addr_Type is 0x01, it <span class="bcp14">MUST</span> be a 4-byte IPv4 address; If Addr_Type is 0x02, it <span class="bcp14">MUST</span> be a 16-byte IPv6 address; If Addr_Type is 0x03, it <span class="bcp14">MUST</span> be a DNS-encoded FQDN(as specified in <span>[<a href="#RFC1035" class="cite xref">RFC1035</a>]</span>).<a href="#section-4.1.1-2.6.1" class="pilcrow">¶</a></p>
+              <p id="section-4.1.1-2.6.1">Variable length. Contains the IPv4 address/IPv6 address/FQDN of the master device. If Addr_Type is 0x01, it <span class="bcp14">MUST</span> be a 4-byte IPv4 address; if Addr_Type is 0x02, it <span class="bcp14">MUST</span> be a 16-byte IPv6 address; if Addr_Type is 0x03, it <span class="bcp14">MUST</span> be a DNS-encoded FQDN (as specified in <span>[<a href="#RFC1035" class="cite xref">RFC1035</a>]</span>).<a href="#section-4.1.1-2.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -1355,9 +1373,15 @@ A master device could be a core switch or a gateway equipped with hardware neura
       <h2 id="name-client-behavior">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-client-behavior" class="section-name selfRef">Client Behavior</a>
       </h2>
-<p id="section-5-1">If a DHCP client requires the LLM metadata, it <span class="bcp14">MUST</span> include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in <span>[<a href="#RFC2132" class="cite xref">RFC2132</a>]</span>. When a DHCP client receives OPTION_LLM_META, it <span class="bcp14">MUST</span> perform the following validation checks:
-* Verify that the <code>Option-Length</code> matches the required structure minimums defined in this document.
-* If <code>Addr_Type</code> is 0x03 (FQDN), verify that the Address / Domain Name field does not exceed 255 octets and represents a properly formatted domain name as specified in <span>[<a href="#RFC1035" class="cite xref">RFC1035</a>]</span>.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">If a DHCP client requires the LLM metadata, it <span class="bcp14">MUST</span> include OPTION_LLM_META in the Parameter Request List (PRL) option, as described in <span>[<a href="#RFC2132" class="cite xref">RFC2132</a>]</span>. When a DHCP client receives OPTION_LLM_META, it <span class="bcp14">MUST</span> perform the following validation checks:<a href="#section-5-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-2.1">
+          <p id="section-5-2.1.1">Verify that the <code>Option-Length</code> matches the required structure minimums defined in this document.<a href="#section-5-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-2.2">
+          <p id="section-5-2.2.1">If <code>Addr_Type</code> is 0x03 (FQDN), verify that the Address / Domain Name field does not exceed 255 octets and represents a properly formatted domain name as specified in <span>[<a href="#RFC1035" class="cite xref">RFC1035</a>]</span>.<a href="#section-5-2.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
 </section>
 </div>
 <div id="server-behavior">
@@ -1365,7 +1389,7 @@ A master device could be a core switch or a gateway equipped with hardware neura
       <h2 id="name-server-behavior">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-server-behavior" class="section-name selfRef">Server Behavior</a>
       </h2>
-<p id="section-6-1">A DHCP server supporting this specification <span class="bcp14">MUST</span> be capable of configuring and storing the LLM metadata, including the master device's LLM address and the master device's LLM configuration parameters. This extension does not introduce any new DHCP message types. The server processing logic <span class="bcp14">MUST</span> comply with the followings:<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">A DHCP server supporting this specification <span class="bcp14">MUST</span> be capable of configuring and storing the LLM metadata, including the master device's LLM address and the master device's LLM configuration parameters. This extension does not introduce any new DHCP message types. The server processing logic <span class="bcp14">MUST</span> comply with the following:<a href="#section-6-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-6-2.1">
           <p id="section-6-2.1.1">Upon receiving a DHCP DISCOVER or DHCP REQUEST message, the server <span class="bcp14">MUST</span> inspect the PRL option. If OPTION_LLM_META is specified in the PRL, the server <span class="bcp14">SHOULD</span> append this option into its corresponding DHCP OFFER and DHCP ACK responses.<a href="#section-6-2.1.1" class="pilcrow">¶</a></p>
@@ -1389,26 +1413,18 @@ A master device could be a core switch or a gateway equipped with hardware neura
       <h2 id="name-iana-considerations">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-8-1">IANA is requested to assign a new DHCP Option code for OPTION_LLM_META from the "BOOTP Vendor Extensions and DHCP Options" registry maintained at http://www.iana.org/.<a href="#section-8-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="acknowledgments">
-<section id="section-9">
-      <h2 id="name-acknowledgments">
-<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
-      </h2>
-<p id="section-9-1">TODO acknowledge.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-8-1">IANA is requested to assign a new DHCP Option code for OPTION_LLM_META from the "BOOTP Vendor Extensions and DHCP Options" registry maintained by IANA.<a href="#section-8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-normative-references">
-<section id="section-10">
+<section id="section-9">
       <h2 id="name-normative-references">
-<a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
       </h2>
 <dl class="references">
 <dt id="RFC1035">[RFC1035]</dt>
       <dd>
-<span class="refTitle">"Domain Names - Implementation and Specification"</span>, <span>n.d.</span>. </dd>
+<span class="refAuthor">Mockapetris, P.</span>, <span class="refTitle">"Domain names - implementation and specification"</span>, <span class="seriesInfo">STD 13</span>, <span class="seriesInfo">RFC 1035</span>, <span class="seriesInfo">DOI 10.17487/RFC1035</span>, <time datetime="1987-11" class="refDate">November 1987</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1035">https://www.rfc-editor.org/rfc/rfc1035</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
       <dd>
@@ -1416,11 +1432,11 @@ A master device could be a core switch or a gateway equipped with hardware neura
 <dd class="break"></dd>
 <dt id="RFC2132">[RFC2132]</dt>
       <dd>
-<span class="refTitle">"DHCP Options and BOOTP Vendor Extensions"</span>, <span>n.d.</span>. </dd>
+<span class="refAuthor">Alexander, S.</span> and <span class="refAuthor">R. Droms</span>, <span class="refTitle">"DHCP Options and BOOTP Vendor Extensions"</span>, <span class="seriesInfo">RFC 2132</span>, <span class="seriesInfo">DOI 10.17487/RFC2132</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2132">https://www.rfc-editor.org/rfc/rfc2132</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC3118">[RFC3118]</dt>
       <dd>
-<span class="refTitle">"Authentication for DHCP Messages"</span>, <span>n.d.</span>. </dd>
+<span class="refAuthor">Droms, R., Ed.</span> and <span class="refAuthor">W. Arbaugh, Ed.</span>, <span class="refTitle">"Authentication for DHCP Messages"</span>, <span class="seriesInfo">RFC 3118</span>, <span class="seriesInfo">DOI 10.17487/RFC3118</span>, <time datetime="2001-06" class="refDate">June 2001</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3118">https://www.rfc-editor.org/rfc/rfc3118</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
     <dd>
@@ -1429,10 +1445,29 @@ A master device could be a core switch or a gateway equipped with hardware neura
 </dl>
 </section>
 </div>
-<div id="authors-addresses">
+<div id="contributors">
 <section id="appendix-A">
-      <h2 id="name-authors-address">
-<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      <h2 id="name-contributors">
+<a href="#name-contributors" class="section-name selfRef">Contributors</a>
+      </h2>
+<span class="break"></span><dl class="dlParallel" id="appendix-A-1">
+        <dt id="appendix-A-1.1">Lei Qi</dt>
+        <dd style="margin-left: 1.5em" id="appendix-A-1.2">
+          <p id="appendix-A-1.2.1">Huawei<a href="#appendix-A-1.2.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="appendix-A-1.3"></dt>
+        <dd style="margin-left: 1.5em" id="appendix-A-1.4">
+          <p id="appendix-A-1.4.1">Email: qilei1@huawei.com<a href="#appendix-A-1.4.1" class="pilcrow">¶</a></p>
+</dd>
+      <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-B">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
 <address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Yuanyuan Yang</span></div>
@@ -1440,6 +1475,14 @@ A master device could be a core switch or a gateway equipped with hardware neura
 <div class="email">
 <span>Email:</span>
 <a href="mailto:yangyuanyuan55@huawei.com" class="email">yangyuanyuan55@huawei.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Qin Wu</span></div>
+<div dir="auto" class="left"><span class="org">Huawei</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:bill.wu@huawei.com" class="email">bill.wu@huawei.com</a>
 </div>
 </address>
 </section>

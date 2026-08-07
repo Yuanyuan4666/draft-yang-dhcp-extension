@@ -3,9 +3,9 @@
 
 
 Network Working Group                                            Y. Yang
-Internet-Draft                                                    Huawei
-Intended status: Informational                              30 June 2026
-Expires: 1 January 2027
+Internet-Draft                                                     Q. Wu
+Intended status: Informational                                    Huawei
+Expires: 7 January 2027                                      6 July 2026
 
 
            DHCP New Option Extension based on LLM Capability
@@ -19,7 +19,7 @@ Abstract
    new DHCP option containing two specific parameters within the DHCP
    payload: the master device's LLM address and the master device's LLM
    configuration.  This allows client devices to identify and register
-   to LLM-enabled master device during the bootstrap phase.
+   to an LLM-enabled master device during the bootstrap phase.
 
 About This Document
 
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 January 2027.
+   This Internet-Draft will expire on 7 January 2027.
 
 Copyright Notice
 
@@ -77,9 +77,9 @@ Table of Contents
    6.  Server Behavior
    7.  Security Considerations
    8.  IANA Considerations
-   Acknowledgments
-   Normative References
-   Author's Address
+   9.  Normative References
+   Contributors
+   Authors' Addresses
 
 1.  Introduction
 
@@ -93,12 +93,14 @@ Table of Contents
 
    Centralized campus Artificial Intelligence for IT Operations (AIOps)
    relies on cloud data centers.  Local devices upload logs and alarms
-   to the cloud for LLM analysis.  This introduces two pitfalls: 1.
-   *Data Privacy*: Regulations prohibit uploading internal network
-   topology and business traffic data to public clouds. 2. *High
-   Latency*: Cloud interactions over WAN (Wide Area Network) introduce
-   high latency, failing the real-time requirements for network self-
-   healing.
+   to the cloud for LLM analysis.  This introduces two pitfalls:
+
+   1.  *Data Privacy*: Regulations prohibit uploading internal network
+       topology and business traffic data to public clouds.
+
+   2.  *High Latency*: Cloud interactions over WAN (Wide Area Network)
+       introduce high latency, failing the real-time requirements for
+       network self-healing.
 
    To eliminate these bottlenecks, shifting LLM inference to the network
    edge is the current trend.  Core switches and gateways are now
@@ -121,8 +123,11 @@ Table of Contents
    To address this limitation, this document extends two distinct
    elements within the DHCP protocol payload through a new DHCP option,
    to help client devices distinguish and connect to a master device
-   with LLM capabilities: 1. *the master device's LLM address* 2. *the
-   master device's LLM configuration*
+   with LLM capabilities:
+
+   1.  *the master device's LLM address*
+
+   2.  *the master device's LLM configuration*
 
 2.  Conventions and Definitions
 
@@ -130,12 +135,6 @@ Table of Contents
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
    "OPTIONAL" in this document are to be interpreted as described in
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
-   capitals, as shown here.
-
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-   "OPTIONAL" in this document are to be interpreted as described in BCP
-   14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
    This document defines the following roles:
@@ -146,10 +145,10 @@ Table of Contents
       the DHCP Server.  A master device could be a core switch or a
       gateway equipped with hardware neural processing units.
 
-   *Client Device*:  The network element that collect the data with
-      limited processing and power capability, which operates as
-      lightweight DHCP Client.  Client Device could be an aggregation
-      switch, access switch, or a Wi-Fi Access Point (distributive
+   *Client Device*:  The network element that collects the data with
+      limited processing and power capability, which operates as a
+      lightweight DHCP Client.  A Client Device could be an aggregation
+      switch, access switch, or a Wi-Fi Access Point (distributively
       deployed).
 
 3.  Typical Deployment Topology
@@ -157,31 +156,26 @@ Table of Contents
    The diagram below illustrates a typical smart campus network
    topology.
 
-                     +---------------------------------------+
-                     |   Upstream Master Device (Core/GW)    |
-                     |   [Centralized NPU or NPU / Model]    |
-                     |         ====== DHCP Server ======     |
-                     +---------------------------------------+
-                                         |
-             ____________________________|___________________________
-             |                                                       |
-   +----------------------+                               +----------------------+
-   | Aggregation Switch A |                               | Aggregation Switch B |
-   +----------------------+                               +----------------------+
-              |                                                      |
-        ______|________________                                ______|________________
-       |                      |                               |                      |
-+------------------+  +------------------+             +------------------+  +------------------+
-|   Access Switch  |  |     Wi-Fi7 AP    |             |   Access Switch  |  |     Wi-Fi7 AP    |
-| [DHCP Client]    |  | [DHCP Client]    |             | [DHCP Client]    |  | [DHCP Client]    |
-+------------------+  +------------------+             +------------------+  +------------------+
+   +---------------------------------------+ | Upstream Master Device
+   (Core/GW) | | [Centralized NPU or NPU / Model] | | ====== DHCP Server
+   ====== | +---------------------------------------+ |
+   ____________________________|___________________________ | |
+   +----------------------+ +----------------------+ | Aggregation
+   Switch A | | Aggregation Switch B | +----------------------+
+   +----------------------+ | | ______|________________
+   ______|________________ | | | | +------------------+
+   +------------------+ +------------------+ +------------------+ |
+   Access Switch | | Wi-Fi7 AP | | Access Switch | | Wi-Fi7 AP | | [DHCP
+   Client] | | [DHCP Client] | | [DHCP Client] | | [DHCP Client] |
+   +------------------+ +------------------+ +------------------+
+   +------------------+
 
-   *Master Device*: The Upstream Master Device (Core/GW) at the root of
-   the network acts as the centralized intelligence center, utilizing
-   hardware acceleration to run the LLM.
+   *Master Device*:  The Upstream Master Device (Core/GW) at the root of
+      the network acts as the centralized intelligence center, utilizing
+      hardware acceleration to run the LLM.
 
-   *Client Device*: The downstream elements, including the Access
-   Switches and Wi-Fi7 APs at the network edge.
+   *Client Device*:  The downstream elements, including the Access
+      Switches and Wi-Fi7 APs at the network edge.
 
    Note: The intermediate Aggregation Switches serve as transparent
    layer-2 or layer-3 transport elements only for transporting traffic.
@@ -194,20 +188,17 @@ Table of Contents
 
 4.1.  New DHCP Option Format (OPTION_LLM_META)
 
-   0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   +---------------+---------------+-------------------------------+
-   |        OPTION_LLM_META        |       Option-Length           |
-   +---------------+---------------+---------------+---------------+
-   |    LLM_Cap    |        LLM_Scale              |  LLM_Role     |
-   +---------------+-------------------------------+---------------+
-   |                      API_Price                                |
-   +-------------------------------+--------------+----------------+
-   |            Dest_Port          |   Addr_Type  |                |
-   +-------------------------------+--------------+                |
-   |                                                               |
-   |           Address / Domain Name (Variable Length...)          |
-   |                                                               |
+   0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
+   1 +---------------+---------------+-------------------------------+ |
+   OPTION_LLM_META | Option-Length |
+   +---------------+---------------+---------------+---------------+ |
+   LLM_Cap | LLM_Scale | LLM_Role |
+   +---------------+-------------------------------+---------------+ |
+   API_Price |
+   +-------------------------------+--------------+----------------+ |
+   Dest_Port | Addr_Type | |
+   +-------------------------------+--------------+ | | | | Address /
+   Domain Name (Variable Length...) | | |
    +---------------------------------------------------------------+
 
 4.1.1.  Field Attribute Interpretations
@@ -224,9 +215,9 @@ Table of Contents
 
    Address / Domain Name:  Variable length.  Contains the IPv4 address/
       IPv6 address/FQDN of the master device.  If Addr_Type is 0x01, it
-      MUST be a 4-byte IPv4 address; If Addr_Type is 0x02, it MUST be a
-      16-byte IPv6 address; If Addr_Type is 0x03, it MUST be a DNS-
-      encoded FQDN(as specified in [RFC1035]).
+      MUST be a 4-byte IPv4 address; if Addr_Type is 0x02, it MUST be a
+      16-byte IPv6 address; if Addr_Type is 0x03, it MUST be a DNS-
+      encoded FQDN (as specified in [RFC1035]).
 
    *the master device's LLM configuration parameters:*
 
@@ -246,11 +237,14 @@ Table of Contents
    If a DHCP client requires the LLM metadata, it MUST include
    OPTION_LLM_META in the Parameter Request List (PRL) option, as
    described in [RFC2132].  When a DHCP client receives OPTION_LLM_META,
-   it MUST perform the following validation checks: * Verify that the
-   Option-Length matches the required structure minimums defined in this
-   document. * If Addr_Type is 0x03 (FQDN), verify that the Address /
-   Domain Name field does not exceed 255 octets and represents a
-   properly formatted domain name as specified in [RFC1035].
+   it MUST perform the following validation checks:
+
+   *  Verify that the Option-Length matches the required structure
+      minimums defined in this document.
+
+   *  If Addr_Type is 0x03 (FQDN), verify that the Address / Domain Name
+      field does not exceed 255 octets and represents a properly
+      formatted domain name as specified in [RFC1035].
 
 6.  Server Behavior
 
@@ -258,7 +252,7 @@ Table of Contents
    configuring and storing the LLM metadata, including the master
    device's LLM address and the master device's LLM configuration
    parameters.  This extension does not introduce any new DHCP message
-   types.  The server processing logic MUST comply with the followings:
+   types.  The server processing logic MUST comply with the following:
 
    *  Upon receiving a DHCP DISCOVER or DHCP REQUEST message, the server
       MUST inspect the PRL option.  If OPTION_LLM_META is specified in
@@ -281,31 +275,44 @@ Table of Contents
 
    IANA is requested to assign a new DHCP Option code for
    OPTION_LLM_META from the "BOOTP Vendor Extensions and DHCP Options"
-   registry maintained at http://www.iana.org/.
+   registry maintained by IANA.
 
-Acknowledgments
+9.  Normative References
 
-   TODO acknowledge.
-
-Normative References
-
-   [RFC1035]  "Domain Names - Implementation and Specification", n.d..
+   [RFC1035]  Mockapetris, P., "Domain names - implementation and
+              specification", STD 13, RFC 1035, DOI 10.17487/RFC1035,
+              November 1987, <https://www.rfc-editor.org/rfc/rfc1035>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
-   [RFC2132]  "DHCP Options and BOOTP Vendor Extensions", n.d..
+   [RFC2132]  Alexander, S. and R. Droms, "DHCP Options and BOOTP Vendor
+              Extensions", RFC 2132, DOI 10.17487/RFC2132, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2132>.
 
-   [RFC3118]  "Authentication for DHCP Messages", n.d..
+   [RFC3118]  Droms, R., Ed. and W. Arbaugh, Ed., "Authentication for
+              DHCP Messages", RFC 3118, DOI 10.17487/RFC3118, June 2001,
+              <https://www.rfc-editor.org/rfc/rfc3118>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-Author's Address
+Contributors
+
+   Lei Qi  Huawei
+
+      Email: qilei1@huawei.com
+
+Authors' Addresses
 
    Yuanyuan Yang
    Huawei
    Email: yangyuanyuan55@huawei.com
+
+
+   Qin Wu
+   Huawei
+   Email: bill.wu@huawei.com
