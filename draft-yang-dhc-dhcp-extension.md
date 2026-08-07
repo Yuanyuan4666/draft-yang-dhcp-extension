@@ -1,49 +1,42 @@
 ---
-
 title: "DHCP New Option Extension based on LLM Capability"
 abbrev: "DHCP LLM Extension"
 category: info
 
 docname: draft-yang-dhc-dhcp-extension-latest
 submissiontype: IETF
-number:
 date: 2026-07-06
 consensus: true
 v: 3
 
 keyword:
-
-* DHCP Extension
-* LLM Capability
-* Increase Automation
+  - DHCP Extension
+  - LLM Capability
+  - Increase Automation
 
 venue:
-github: "Yuanyuan4666/draft-yang-dhcp-extension"
-latest: "https://Yuanyuan4666.github.io/draft-yang-dhcp-extension/draft-yang-dhcp-extension.html"
+  github: "Yuanyuan4666/draft-yang-dhcp-extension"
+  latest: "https://Yuanyuan4666.github.io/draft-yang-dhcp-extension/draft-yang-dhcp-extension.html"
 
-## author:
+author:
+  - fullname: "Yuanyuan Yang"
+    initials: "Y."
+    surname: "Yang"
+    organization: "Huawei"
+    email: "yangyuanyuan55@huawei.com"
 
-```
-fullname: "Yuanyuan Yang"
-initials: "Y."
-surname: "Yang"
-organization: Huawei
-email: "yangyuanyuan55@huawei.com"
-```
-
--
-fullname: "Qin Wu"
-initials: "Q."
-surname: "Wu"
-organization: Huawei
-email: "[bill.wu@huawei.com](mailto:bill.wu@huawei.com)"
+  - fullname: "Qin Wu"
+    initials: "Q."
+    surname: "Wu"
+    organization: "Huawei"
+    email: "bill.wu@huawei.com"
 
 normative:
-RFC2119:
-RFC8174:
-RFC2132:
-RFC1035:
-RFC3118:
+  RFC2119:
+  RFC8174:
+  RFC2132:
+  RFC1035:
+  RFC3118:
 
 informative:
 
