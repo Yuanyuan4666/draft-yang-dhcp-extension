@@ -31,14 +31,7 @@ author:
     organization: "Huawei"
     email: "bill.wu@huawei.com"
 
-normative:
-  RFC2119:
-  RFC8174:
-  RFC2132:
-  RFC1035:
-  RFC3118:
 
-informative:
 
 ...
 
@@ -188,9 +181,8 @@ IANA is requested to assign a new DHCP Option code for OPTION_LLM_META from the 
 --- back
 
 # Contributors
-
 {:numbered="false"}
 
 Lei Qi
 : Huawei
-: Email: [qilei1@huawei.com](mailto:qilei1@huawei.com)
+: Email: qilei1@huawei.com
